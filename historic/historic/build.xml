@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: build.xml,v 1.35 2006/03/26 15:22:48 christianhujer Exp $ -->
+<!DOCTYPE project [
+    <!ENTITY catalogForAnt SYSTEM "src/doc/dtd/catalogForAnt.xml">
+]>
+<project default="compile">
+
+    <description>
+        Build file for JAPI - (Yet another (hopefully) useful) Java API.
+    </description>
+
+    <property file="developer.properties" />
+    <property file="project.properties" />
+    <property name="build.source.encoding" value="utf-8" />
+    <property name="build.source.version"  value="1.5" />
+    <property name="build.target.version"  value="${build.source.version}" />
+    <property name="debug"       value="false" />
+    <property name="javac.args"  value="-Xlint:all,-path,-unchecked,-fallthrough,-serial" />
+    <property name="user.javadoc.link" value="http://java.sun.com/j2se/1.5.0/docs/api/" />
+    <property name="user.javadoc.javasrc" value="${user.javadoc.javahome}/src" />
+    <property name="user.svn.javahl" value="false" />
+    <property name="svn.baseUrl" value="https://svn.sourceforge.net/svnroot/japi" />
+
+    <condition property="svnCreateBranch" value="true">
+        <equals arg1="${project.version.patch}" arg2="0" />
+    </condition>
+    <condition property="svn.branch.sourceUrl" value="${svn.baseUrl}/trunk">
+        <equals arg1="${project.version.patch}" arg2="0" />
+    </condition>
+    <condition property="svn.branch.targetUrl" value="${svn.baseUrl}/branches/${project.version.major}.${project.version.minor}">
+        <equals arg1="${project.version.patch}" arg2="0" />
+    </condition>
+    <condition property="svn.branch.message" value="Creating branch for version ${project.version.major}.${project.version.minor}">
+        <equals arg1="${project.version.patch}" arg2="0" />
+    </condition>
+    <property name="svn.tag.sourceUrl" value="${svn.baseUrl}/branches/${project.version.major}.${project.version.minor}" />
+    <property name="svn.tag.targetUrl" value="${svn.baseUrl}/tags/${project.version.major}.${project.version.minor}.${project.version.patch}" />
+    <property name="svn.tag.message"   value="Creating release tag for version ${project.version.major}.${project.version.minor}.${project.version.patch}" />
+
+    <path id="xsltpath">
+        <fileset dir="lib" includes="**/*.jar" />
+    </path>
+
+    <taskdef name="megaxslt"  classpathref="xsltpath"         classname="com.hujer.ant.tasks.megaxslt.MegaXsltTask" />
+    <taskdef name="rgzip"     classpathref="xsltpath"         classname="com.hujer.ant.tasks.rgzip.RGZipTask" />
+    <taskdef name="pack200"   classpath="lib/Pack200Task.jar" classname="com.sun.tools.apache.ant.pack200.Pack200Task" />
+    <taskdef name="freshmeat" classpath="lib/antmeat.jar"     classname="de.frewert.ant.freshmeat.Announcement">
+        <classpath>
+            <pathelement path="lib/xmlrpc-2.0.1.jar" />
+            <pathelement path="lib/commons-codec-1.3.jar" />
+        </classpath>
+    </taskdef>
+    <taskdef name="svn"       classpath="lib/svnant.jar"      classname="org.tigris.subversion.svnant.SvnTask">
+        <classpath>
+            <pathelement path="lib/svnClientAdapter.jar" />
+            <pathelement path="lib/jakarta-regexp-1.3.jar" />
+        </classpath>
+    </taskdef>
+
+    &catalogForAnt;
+
+    <target
+        name        = "update"
+        if          = "dev.autoupdate"
+    >
+        <svn javahl="${user.svn.javahl}">
+            <update dir="."/>
+        </svn>
+    </target>
+
+    <target
+        name        = "init"
+        depends     = "update"
+    >
+    </target>
+
+    <target
+        name        = "clean"
+        description = "Removes all generated files."
+    >
+        <delete dir="dest" />
+        <delete dir="dist" />
+        <subant target="clean">
+            <fileset dir="src/doc/guide" includes="**/build.xml" />
+        </subant>
+    </target>
+
+    <target
+        name        = "guideProjects"
+        description = "builds all guide projects."
+    >
+        <subant>
+            <fileset dir="src/doc/guide" includes="**/build.xml" />
+        </subant>
+    </target>
+
+    <target
+        name        = "compile"
+        depends     = "init"
+        description = "Compiles the JAPI sources."
+    >
+        <mkdir dir="dest/app" />
+        <javac
+            srcdir   = "src/app"
+            destdir  = "dest/app"
+            encoding = "${build.source.encoding}"
+            source   = "${build.source.version}"
+            target   = "${build.target.version}"
+            debug    = "${debug}"
+            excludes = "test/**/*.java"
+        >
+            <classpath>
+                <fileset dir="lib" includes="annotations.jar" />
+            </classpath>
+            <compilerarg line="${javac.args}" />
+        </javac>
+        <copy todir="dest/app">
+            <fileset dir="src/app" includes="**/*.properties" />
+        </copy>
+    </target>
+
+    <target
+        name        = "doc"
+        depends     = "editorialDoc, apiDoc"
+        description = "Creates project documentation."
+    />
+
+    <target
+        name        = "java2html"
+        description = "Converts documentation java sources to XHTML."
+    >
+        <taskdef name="java2html" classpath="lib/java2html.jar" classname="de.java2html.anttasks.Java2HtmlTask" />
+        <java2html
+            srcdir                = "src/doc"
+            destdir               = "src/doc"
+            includes              = "**/*.java"
+            outputformat          = "xhtml11"
+            tabs                  = "4"
+            style                 = "eclipse"
+            addlineanchors        = "true"
+            includedocumentfooter = "true"
+            includedocumentheader = "true"
+            lineanchorprefix      = "line"
+            showdefaulttitle      = "true"
+            showfilename          = "true"
+            showlinenumbers       = "true"
+            showtableborder       = "true"
+        />
+    </target>
+
+    <target
+        name        = "editorialDoc"
+        description = "Creates the editorial part of the project documentation."
+        depends     = "java2html"
+    >
+        <mkdir dir="dest/doc" />
+        <megaxslt
+            srcdir="src/doc"
+            destdir="dest/doc"
+            includes="**/*.xhtml"
+            validatesource="true"
+            validatedest="true"
+            ending="xhtml"
+            transformerFactoryImplementationClassName="net.sf.saxon.TransformerFactoryImpl"
+        >
+            <xmlcatalog refid="commonDTDs" />
+            <transformation stylesheet="src/doc/transform.xslt" />
+            <transformation stylesheet="src/doc/cleanupXhtml11.xslt" />
+        </megaxslt>
+        <megaxslt
+            srcdir="dest/doc"
+            destdir="dest/doc"
+            includes="**/*.xhtml"
+            validatesource="true"
+            validatedest="false"
+            ending="html"
+            converttocanonical="true"
+            transformerFactoryImplementationClassName="net.sf.saxon.TransformerFactoryImpl"
+        >
+            <xmlcatalog refid="commonDTDs" />
+            <transformation stylesheet="src/doc/xhtml2html.xslt" />
+        </megaxslt>
+        <copy
+            todir="dest/doc"
+        >
+            <fileset dir="src/doc">
+                <include name="**/.htaccess" />
+                <include name="**/*.html" />
+                <include name="dtd/**/*.mod" />
+                <include name="dtd/**/*.dtd" />
+                <include name="dtd/**/*.xml" />
+                <include name="**/*.css" />
+                <include name="**/*.png" />
+                <exclude name="**/.xvpics/*.png" />
+            </fileset>
+        </copy>
+    </target>
+
+    <target
+        name        = "apiDoc"
+        depends     = "init"
+        description = "Creates public javadoc documentation."
+    >
+        <mkdir dir="dest/doc/api/${project.version}" />
+        <copy todir="dest/doc/api/${project.version}" file="src/doc/api/public/copyright.html" />
+        <copy todir="dest/doc/api/${project.version}" file="src/doc/api/public/.htaccess" />
+        <javadoc
+            destdir     = "dest/doc/api/${project.version}"
+            access      = "protected"
+            author      = "yes"
+            version     = "yes"
+            locale      = "en_US"
+            use         = "yes"
+            splitindex  = "yes"
+            windowtitle = "JAPI API documentation"
+            doctitle    = "JAPI&lt;br /&gt;Yet another Java API&lt;br /&gt;API Documentation"
+            header      = "JAPI ${project.version}&lt;br /&gt;Yet another Java API&lt;br /&gt;API Documentation"
+            footer      = "JAPI&lt;br /&gt;Yet another Java API&lt;br /&gt;API Documentation"
+            bottom      = "&lt;div style=&quot;text-align:center;&quot;&gt;&#169; 2005-2006 Christian Hujer. All rights reserved. See &lt;a href=&quot;{@docRoot}/copyright.html&quot;&gt;copyright&lt;/a&gt;&lt;/div&gt;"
+            serialwarn  = "yes"
+            charset     = "${build.source.encoding}"
+            docencoding = "${build.source.encoding}"
+            source      = "${build.source.version}"
+            encoding    = "${build.source.encoding}"
+            linksource  = "yes"
+            overview    = "src/app/overview.html"
+            link        = "${user.javadoc.link}"
+        >
+            <classpath>
+                <fileset dir="lib" includes="annotations.jar" />
+            </classpath>
+            <sourcepath>
+                <pathelement path="${user.javadoc.javasrc}" />
+                <pathelement path="src/app" />
+            </sourcepath>
+            <packageset
+                dir="src/app"
+                defaultexcludes="yes"
+            >
+                <include name="**" />
+            </packageset>
+            <tag enabled="true"  name="retval"  description="Return Values:"  scope="methods" />
+            <tag enabled="true"  name="pre"     description="Preconditions:"  scope="methods,constructors" />
+            <tag enabled="true"  name="post"    description="Postconditions:" scope="methods" />
+            <tag enabled="true"  name="note"    description="Notes:" />
+            <tag enabled="true"  name="warning" description="Warnings:" />
+            <tag enabled="true"  name="todo"    description="Todo:" />
+            <tag enabled="true"  name="fixme"   description="Fixme:" />
+            <tag enabled="true"  name="xxx"     description="XXX:" />
+            <tag enabled="false" name="used"    description="Manually marked as used." />
+        </javadoc>
+    </target>
+
+    <target
+        name        = "dist"
+        description = "Packs distribution archives."
+        depends     = "distSrc, distLib, distDoc"
+    />
+
+    <target
+        name        = "distSrc"
+        description = "Packs source distribution archives."
+    >
+        <mkdir dir="dist" />
+        <property name="distSrc" value="dist/japi-${project.version}.src" />
+        <parallel>
+            <tar tarfile="${distSrc}.tar">
+                <tarfileset dir="." prefix="japi-${project.version}">
+                    <include name="src/**" />
+                    <include name="build.xml" />
+                </tarfileset>
+            </tar>
+            <zip destfile="${distSrc}.zip">
+                <zipfileset dir="." prefix="japi-${project.version}">
+                    <include name="src/**" />
+                    <include name="build.xml" />
+                </zipfileset>
+            </zip>
+            <jar destfile="${distSrc}.jar">
+                <zipfileset dir="." prefix="japi-${project.version}">
+                    <include name="src/**" />
+                    <include name="build.xml" />
+                </zipfileset>
+            </jar>
+        </parallel>
+        <parallel>
+            <gzip  src="${distSrc}.tar" destfile="${distSrc}.tar.gz" />
+            <bzip2 src="${distSrc}.tar" destfile="${distSrc}.tar.bz2" />
+        </parallel>
+        <delete file="${distSrc}.tar" />
+    </target>
+
+    <target
+        name        = "distLib"
+        description = "Packs library distribution archives."
+        depends     = "compile"
+    >
+        <mkdir dir="dist" />
+        <property name="distLib" value="dist/japi-${project.version}.lib" />
+        <jar destfile="${distLib}.jar">
+            <zipfileset dir="dest/app"/>
+            <zipfileset src="lib/annotations.jar"/>
+            <manifest>
+                <attribute name="Implementation-Title"   value="JAPI" />
+                <attribute name="Implementation-Vendor"  value="Christian Hujer + the JAPI Developers" />
+                <attribute name="Implementation-Version" value="${project.version}" />
+                <attribute name="Implementation-URL"     value="http://sourceforge.net/projets/japi/" />
+            </manifest>
+        </jar>
+        <pack200
+            src="${distLib}.jar"
+            destfile="${distLib}.pack.gz"
+            gzipoutput="true"
+            stripdebug="true"
+            effort="9"
+            keepfileorder="false"
+            modificationtime="latest"
+            deflatehint="false"
+        />
+    </target>
+
+    <target
+        name        = "distDoc"
+        description = "Packs documentation archives."
+        depends     = "apiDoc"
+    >
+        <mkdir dir="dist" />
+        <property name="distDoc" value="dist/japi-${project.version}.doc" />
+        <parallel>
+            <tar tarfile="${distDoc}.tar">
+                <tarfileset dir="dest/doc" prefix="japi-${project.version}">
+                    <include name="api/${project.version}/**" />
+                </tarfileset>
+            </tar>
+            <zip destfile="${distDoc}.zip">
+                <zipfileset dir="dest/doc" prefix="japi-${project.version}">
+                    <include name="api/${project.version}/**" />
+                </zipfileset>
+            </zip>
+            <jar destfile="${distDoc}.jar">
+                <zipfileset dir="dest/doc" prefix="japi-${project.version}">
+                    <include name="api/${project.version}/**" />
+                </zipfileset>
+            </jar>
+        </parallel>
+        <parallel>
+            <gzip  src="${distDoc}.tar" destfile="${distDoc}.tar.gz" />
+            <bzip2 src="${distDoc}.tar" destfile="${distDoc}.tar.bz2" />
+        </parallel>
+        <delete file="${distDoc}.tar" />
+    </target>
+
+    <target
+        name        = "checkDevMail"
+        description = "checks whether the developer defined his / her email address"
+        unless      = "developer.email"
+    >
+        <fail message="You must define the property developer.email with your email address in the file developer.properties." />
+    </target>
+
+    <target
+        name        = "checkDevSmtp"
+        description = "checks whether the developer defined his / her smtp host"
+        unless      = "user.mail.smtp.host"
+    >
+        <fail message="You must define the property user.mail.smtp.host with your smtp host address in the file developer.properties." />
+    </target>
+
+    <target
+        name        = "releaseDist"
+        description = "uploads distribution archives to sourceforge."
+        if          = "developer.email"
+        depends     = "checkDevMail, dist"
+    >
+        <touch file="src/doc/api/start.xhtml" millis="0" />
+        <megaxslt
+            srcdir="src/doc/api"
+            destdir="src/doc/api"
+            includes="start.xhtml"
+            validatesource="true"
+            validatedest="true"
+            ending="xhtml"
+            converttocanonical="true"
+            checktimestamps="true"
+            transformerFactoryImplementationClassName="net.sf.saxon.TransformerFactoryImpl"
+        >
+            <xmlcatalog refid="commonDTDs" />
+            <parameter name="project.version" value="${project.version}" />
+            <transformation stylesheet="src/doc/api/release.xslt" />
+        </megaxslt>
+        <svn javahl="${user.svn.javahl}">
+            <commit file="src/doc/api/start.xhtml" message="Updating API link to include ${project.version}." />
+        </svn>
+        <exec executable="rsync">
+            <arg line="-auzv -e ssh dest/doc/api/ ${user.rsync.username}@${user.rsync.host}:${user.rsync.dir}/htdocs/api/" />
+        </exec>
+        <sshexec
+            host="${user.rsync.host}"
+            username="${user.rsync.username}"
+            keyfile="${user.ssh.keyfile}"
+            command="rm ${user.rsync.dir}/htdocs/api/latest ; ln -s ${project.version} ${user.rsync.dir}/htdocs/api/latest"
+        />
+        <ftp
+            server = "upload.sourceforge.net"
+            userid = "anonymous"
+            password = "${developer.email}"
+            remotedir = "incoming"
+            action = "put"
+        >
+            <fileset dir="dist" />
+        </ftp>
+        <antcall target="svnCreateBranch" />
+        <antcall target="svnCreateTag" />
+        <antcall target="uploadDoc" />
+    </target>
+
+    <target
+        name        = "uploadDoc"
+        description = "uploads the latest editorial documentation."
+        depends     = "editorialDoc"
+    >
+        <exec executable="rsync">
+            <arg line="-auzv --exclude=api/*/ -e ssh dest/doc/ ${user.rsync.username}@${user.rsync.host}:${user.rsync.dir}/htdocs/" />
+        </exec>
+    </target>
+
+    <target
+        name        = "announce"
+        description = "announce new version on freshmeat.net"
+    >
+        <echo>Announcing. Press return to start announcing this release at FreshMeat.</echo>
+        <input/>
+        <freshmeat
+            username = "${user.freshmeat.username}"
+            password = "${user.freshmeat.password}"
+        >
+            <printlicenses/>
+            <printreleasefoci/>
+            <publish
+                projectname = "japi"
+                branchname  = "Default"
+                version     = "${project.version}"
+                focus       = "${project.focus}"
+            >
+                <changes file="LatestNews" />
+                <urlblock
+                    homepage    = "http://japi.sourceforge.net/"
+                    cvs         = "http://cvs.sourceforge.net/viewcvs.py/japi/"
+                    mailinglist = "http://sourceforge.net/mailarchive/forum.php?forum=japi-users"
+                    tgz         = "http://prdownloads.sourceforge.net/japi/japi-${project.version}.src.tar.gz?download"
+                    bz2         = "http://prdownloads.sourceforge.net/japi/japi-${project.version}.src.tar.bz2?download"
+                    zip         = "http://prdownloads.sourceforge.net/japi/japi-${project.version}.src.zip?download"
+                />
+            </publish>
+        </freshmeat>
+    </target>
+
+    <target
+        name        = "release"
+        description = "Releases a new version of JAPI."
+    >
+        <antcall target="clean" />
+        <antcall target="releaseDist" />
+        <echo>I've uploaded the distribution archives to sourceforge.
+Press return when you're done configuring the new file releases on sourceforge.
+I will then announce the release at FreshMeat.</echo>
+        <input/>
+        <antcall target="announce" />
+    </target>
+
+    <target
+        name        = "svnCreateBranch"
+        description = "Creates a release branch for a new major or minor revision. This target shouldn't be invoked directly."
+        if          = "svnCreateBranch"
+    >
+        <svn javahl="${user.svn.javahl}">
+            <copy srcUrl="${svn.branch.sourceUrl}" desturl="${svn.branch.targetUrl}" message="${svn.branch.message}" />
+        </svn>
+    </target>
+
+    <target
+        name        = "svnCreateTag"
+        description = "Creates a release tag for a new patch revision. This target shouldn't be invoked directly."
+    >
+        <svn javahl="${user.svn.javahl}">
+            <copy srcUrl="${svn.tag.sourceUrl}" desturl="${svn.tag.targetUrl}" message="${svn.tag.message}" />
+        </svn>
+    </target>
+
+    <target
+        name        = "checkstyle"
+        description = "Runs checkstyle to stylecheck the source code"
+    >
+        <taskdef
+            resource  = "checkstyletask.properties"
+            classpath = "lib/checkstyle.jar"
+        >
+            <classpath>
+                <pathelement path="lib/antlr.jar" />
+                <pathelement path="lib/commons-beanutils-core.jar" />
+            </classpath>
+        </taskdef>
+        <checkstyle
+            config          = "src/checkstyle.xml"
+            failOnViolation = "false"
+        >
+            <formatter type="xml" tofile="dest/doc/checkstyle_report.xml" />
+            <formatter type="plain" tofile="dest/doc/checkstyle_report.txt" />
+            <formatter type="plain" />
+            <fileset dir="src/app" includes="**/*.java" />
+            <fileset dir="src" includes="test/**/*.java" />
+        </checkstyle>
+        <style
+            in    = "dest/doc/checkstyle_report.xml"
+            out   = "dest/doc/checkstyle_report.html"
+            style = "src/doc/checkstyle.xslt"
+        />
+    </target>
+
+    <target
+        name        = "mailCheckstyle"
+        description = "Mails checkstyle results to the mailing list"
+        depends     = "checkstyle, checkDevMail, checkDevSmtp"
+    >
+        <mail
+            from     = "${developer.email}"
+            tolist   = "japi-devel@lists.sourceforge.net"
+            mailhost = "${user.mail.smtp.host}"
+            subject  = "Checkstyle violation(s) in JAPI"
+            files    = "checkstyle_report.html"
+        />
+    </target>
+
+    <target
+        name        = "changelog"
+        description = "Updates the changelog"
+    >
+        <exec executable="svn" output="src/doc/changelog.xml">
+            <arg line="log -v --xml" />
+        </exec>
+        <style
+            in    = "src/doc/changelog.xml"
+            out   = "src/doc/changelog.xhtml"
+            style = "src/doc/changelog.xslt"
+        />
+    </target>
+
+</project>

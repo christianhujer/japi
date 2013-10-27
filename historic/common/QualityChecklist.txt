@@ -1,0 +1,35 @@
+This checklist serves for a module review.
+Such a review must be performed prior to a module release.
+
+Warnings Quality
+[ ]  Checkstyle is run using common/trunk/sun_checks.xml and reports no errors.
+[ ]  Checkstyle is run using common/trunk/sun_checks.xml and reports no warnings.
+[ ]  IntelliJ IDEA Inspections is run using the project settings and reports no errors.
+[ ]  IntelliJ IDEA Inspections is run using the project settings and reports no warnings.
+[ ]  There are no redundant @SuppressWarnings annotations.
+[ ]  All @SuppressWarnings annotations are reasonable.
+     Note: Checkstyle can be run using "ant checkstyle".
+
+NullPointerException Prevention
+[ ]  All fields are annotated @NotNull / @Nullable
+[ ]  All reference return types are annotated @NotNull / @Nullable
+[ ]  All reference parameter types are annotated @NotNull / @Nullable
+[ ]  IntelliJ IDEA reports no warnings about @NotNull / @Nullable / null issues
+
+Javadoc Comment Quality
+[ ]  All members have a javadoc comment, including packages (package-info.java).
+[ ]  All parameters, returns and exceptions are documented.
+[ ]  All parameter, return and exception documentation ends in a full stop.
+[ ]  All javadoc comments have a brief that ends in a full stop.
+[ ]  All types have at least one @author tag.
+
+Unit Test Quality
+[ ]  There is a unit test for every concrete class.
+[ ]  The unit tests can be run and evaluated with Ant.
+[ ]  All unit tests are run. The test run does not yield errors.
+
+General Module Quality
+[ ]  The regular documentation files are there: CHANGES, COPYING, CREDITS, INSTALL, LICENSE, MAINTAINERS, NEWS, README.
+[ ]  The regular documentation files properly document this module, not another module.
+[ ]  The module can be built and packaged with Ant outside an IDE.
+[ ]  If the module belongs to progs or tools: The module runs after being built.

@@ -1,0 +1,37 @@
+JAPI ImaJar is a set of shell scripts for easy installation of executable Jars
+for command line usage.
+
+ImaJar means "I'm a jar", which is the basic philosophy.  The Jar should know
+itself that it is a jar, not the user.  The user shouldn't notice a difference
+whether the command she executes is a normal exe or a jar.
+
+ImaJar mainly consists of three simply bash shells scripts:
+
+install.sh
+    This script installs ImaJar for the user that runs the script.
+
+insjar.sh
+    This script takes two arguments.
+    The first argument is the jar file that shall be available as command.
+    The second argument is the desired command name.
+    Running the script will install the jar and make it available under the
+    given command name.
+
+imajar.sh
+    This script is used to mimic normal commands with jars.
+
+
+How does ImaJar work behind the scene?
+
+insjar.sh copies the Jar file to a special directory.
+Then it creates two links: One for the jar and one for the command.
+The link for the command links to imajar.sh from the desired command name.
+The link for the jar is, apart from the ending, the same name as the link to
+the command.
+
+Example:
+insjar.sh Replacer-0.1-app.jar Replacer
+Result:
+~/bin/Replacer links to ~/bin/imajar.sh
+~/bin/jars/Replacer.jar links to ~/bin/jars/Replacer-0.1-app.jar
+running "Replacer" will execute ~/bin/jars/Repalcer-0.1-app.jar

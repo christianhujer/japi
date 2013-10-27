@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2009  Christian Hujer.
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation; either
+  ~ version 2.1 of the License, or (at your option) any later version.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta name="Date" content="$Date: 2006-11-26 16:38:11 +0100 (So, 26 Nov 2006) $" />
+        <title>JAPI Lib ArgParser</title>
+    </head>
+    <body>
+        <h1>JAPI Lib Argparser</h1>
+        <p>
+            <em>JAPI Lib Argparser</em> is subproject of JAPI which features a library for parsing command line arguments.
+        </p>
+        <h2>Supported features</h2>
+        <p>
+            It supports the following features:
+        </p>
+        <ul>
+            <li>Easy-to-write Session-Bean-like code</li>
+            <li>Bean-like reflective / introspective usage (uses annotations)</li>
+            <li>Java standard <abbr>i18n</abbr> / <abbr>l10n</abbr> support using properties files</li>
+            <li>Short (e.g. <code>-f</code>) and long (e.g. <code>--filename</code>) options</li>
+            <li>Allow long options to be written with one or two dashes, with or without equals sign: <code>-option value</code>, <code>--option value</code>, <code>-option=value</code> and <code>--option=value</code> are all valid. POSIX <code>-W</code> for long options is also supported.</li>
+            <li>Concatenation of short options (e.g. <code>-fiz</code> for <code>-f -i -z</code>)</li>
+            <li>Automatic built-in help (<code>-h</code>, <code>-help</code> and <code>--help</code>)</li>
+            <li>Mandatory and optional options / switches</li>
+            <li>Automatic conversion of command line arguments to relevant Java types</li>
+            <li>Options are consistently evaluated from left to right. Apart from that, the order of options doesn't matter.</li>
+            <li>Optional logging and log level setting (<code>-l level</code>)</li>
+            <li>Options can be included from files.</li>
+        </ul>
+        <h2>Target Audience</h2>
+        <ul>
+            <li>
+                Direct Audience: Developers
+                <ul>
+                    <li>Makes Java command line argument parsing easy.</li>
+                    <li>Keeps you from reinventing the wheel, gets the job done for you.</li>
+                </ul>
+            </li>
+            <li>
+                Indirect Audience: Users
+                <ul>
+                    <li>Makes command line option and argument parsing more consistent between programs.</li>
+                    <li>Increases the chance of at least a minimum help being available.</li>
+                </ul>
+            </li>
+        </ul>
+    </body>
+</html>

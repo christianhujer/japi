@@ -1,0 +1,9 @@
+JAPI COMMON LICENSE INFORMATION
+-------------------------------
+
+Japi Common is licensed under LGPL.
+See file COPYING.
+
+Japi Common uses some third part libraries, especially for building.
+These libraries are contained in the lib/ directory and have their own licenses.
+See the corresponding LICENSE-*-files in the common/lib/ directory for the licenses of third party libraries.

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id$ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta name="Date" content="$Date: 2007-08-12 14:32:36 +0530 (So, 12. Aug 2007) $" />
+        <title>JAPI Pending Tasks</title>
+    </head>
+    <body>
+        <p>
+            This is a scratch board for pending tasks that need to be done with JAPI.
+            The tasks are not in any particular order, just random.
+            They are here for public discussion before they become BUG / RFE entries in the bug tracker.
+        </p>
+        <dl>
+            <dt><!-- TODO -->Review package descriptions</dt>
+            <dd>
+                Some package descriptions might be inaccurate or not good enough.
+            </dd>
+            <dt><!-- TODO -->Improve java2html</dt>
+            <dd>
+                java2html needs some improvement to create XHTML 1.1 with properly identifiable lines.
+                E.g. <code><![CDATA[<span id="line10" class="even line">...</span>]]></code>.
+                The stylesheet should allow for alternating background of odd and even lines.
+            </dd>
+            <dt><!-- TODO -->Finnish JTreeTable</dt>
+            <dd>
+                The class JTreeTable needs to be finnished.
+            </dd>
+            <dt><!-- TODO -->Finnish preferences modules</dt>
+            <dd>
+                The preferences modules for keyboard, menu, toolbar, dialogs (bringing onetime dialogs back again) and proxy need to be finnished resp. created.
+            </dd>
+            <dt><!-- TODO -->Increase JAPI</dt>
+            <dd>
+                Cher has some old JAPI versions from the time of JAPI before SF, which might contain some useful classes that should go into JAPI.
+            </dd>
+            <dt><!-- TODO -->Add Cursor Handling to ActionBuilder</dt>
+            <dd>
+                ActionBuilder should be able to automatically set the cursors for components it creates.
+            </dd>
+            <dt><!-- TODO -->Improve ToolbarLayout</dt>
+            <dd>
+                ToolbarLayout needs an improvement to allow toolbars to be placed next to each other.
+            </dd>
+            <dt><!-- TODO -->Create font browser tool</dt>
+            <dd>
+                This goes in tools/font
+            </dd>
+            <dt><!-- TODO -->Create a jar browser tool</dt>
+            <dd>
+                This goes in tools/jar
+            </dd>
+            <dt><!-- TODO -->Rework guide on XInclude</dt>
+            <dd>
+                Some source code in the guide is not yet included using java2html and XInclude.
+                This should be changed to let all source code look consistently.
+            </dd>
+            <dt><!-- TODO -->Website Layout improvement</dt>
+            <dd>
+                JAPI needs a logo and a better website.
+            </dd>
+            <dt><!-- TODO -->IDE project files</dt>
+            <dd>
+                Think about a concept of how to put IDE project files in the JAPI repository in a way that when users change them, they'll be working on their copies without creating new versions when they do commits.
+                For a start, IntelliJ IDEA, NetBeans and Eclipse should be supported.
+                Perhaps applying the UCM stream concept of ClearCase might also be a possible solution to this.
+                Question: How to checkout a trunk directory from a branch instead.
+            </dd>
+            <dt><!-- TODO -->Unit Tests</dt>
+            <dd>
+                JAPI needs a unit test suite.
+            </dd>
+            <dt><!-- TODO -->Set svn:ignore properties properly</dt>
+            <dd>
+                Some directories like tools/fonts should have settings for svn:ignore.
+                All sub project directories with their own build.xml should, for instance, set svn:ignore to exclude their <code>classes</code> directory.
+            </dd>
+            <dt><!-- TODO -->NPE avoidance</dt>
+            <dd>
+                There's much code, especially in ActionBuilder, which will throw little useful NullPointerExceptions.
+                This code should be reworked by using <code>@Nullable</code> and <code>@NotNull</code> annotations.
+                All possible NullPointerException warnings should be removed except in acceptable cases.
+                This task also includes the definition of a list of acceptable cases of possible NullPointerExceptions.
+            </dd>
+            <dt><!-- TODO -->Properties handling</dt>
+            <dd>
+                Make sure all property files are iso-8859-1 and not any other encoding.
+                Also make sure that in xi:include elements, property files are included as iso-8859-1.
+            </dd>
+            <dt><!-- TODO -->Add syntax highlighting for property files</dt>
+            <dd>
+                Add a syntax highlighting for property files.
+            </dd>
+            <dt><!-- TODO -->Remove unused meta stuff from XHTML sources</dt>
+            <dd>
+                Some XHTML sources contain unused meta stuff.
+                This should be removed.
+            </dd>
+            <dt><!-- TODO -->Improve copyright handling</dt>
+            <dd>
+                Files get automatic copyright notices.
+                Currently, the year and name are fixed.
+                This should be improved.
+            </dd>
+            <dt><!-- TODO -->Unify Utility Classes</dt>
+            <dd>
+                Several Utility Classes do not yet have a private constructor. They all should get one.
+                The documentation on all these private constructors should follow the same pattern.
+            </dd>
+            <dt><!-- TODO -->Unify SuppressWarnings in case of working around bugs</dt>
+            <dd>
+                Several warning suppressions do not suppress valid warnings but bogus warnings that are bugs of IntelliJ IDEA.
+                These warning suppressions should be tagged as such with a special comment to find and remove them once the bugs in IntelliJ IDEA are
+                fixed.
+                <br />
+                Suggestion: <samp>// XXX workaround bug in IntelliJ IDEA (<var>explanatory text</var>)</samp>.
+                <br />
+                Example: <pre><![CDATA[        } catch (final InvocationTargetException ex) {
+            // XXX workaround bug in IntelliJ IDEA (ex is NOT ignored)
+            //noinspection ThrowInsideCatchBlockWhichIgnoresCaughtException
+            throw new RuntimeException(ex.getCause());
+        }]]></pre>
+                Also think whether IntelliJ IDEA or Inspection Gadgets is to blame.
+            </dd>
+            <dt><!-- TODO -->Create class for centering top level containers on different references</dt>
+            <dd>
+                AWT lacks good facilities for centering top level containers.
+                Work around this.
+            </dd>
+            <dt><!-- TODO -->Create a library for good command line argument handling</dt>
+            <dd>
+                Usage effort should be kept at a minimum.
+                An easy to use and easy to integrate pattern should be used.
+            </dd>
+        </dl>
+    </body>
+</html>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: changes.xhtml,v 1.6 2006/03/29 22:09:28 christianhujer Exp $ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta name="Date" content="$Date: 2007-08-12 14:32:36 +0530 (So, 12. Aug 2007) $" />
+        <title>JAPI - Important Changes</title>
+    </head>
+    <body>
+        <h2>Release 0.10.0</h2>
+        <ul>
+            <li>ActionBuilder can create popup menus now.</li>
+            <li>NotNullIterator and NotNullIterable added.</li>
+        </ul>
+        <h2>Release 0.9.1</h2>
+        <p>Bug fix release.</p>
+        <h2>Release 0.9.0 (2006-04-17)</h2>
+        <h3>New additions and features</h3>
+        <ul>
+            <li>Command Line Argument Parser added.</li>
+            <li>JEduca, a KEduca clone, added as an example application. (Subversion access only)</li>
+        </ul>
+        <h2>JAPI migrated to Subversion (2006-04-03)</h2>
+        <h2>Release 0.8.0 (2006-03-29)</h2>
+        <h3>New additions and features</h3>
+        <ul>
+            <li>
+                <code>ActionBuilder</code> enhancements:
+                <ul>
+                    <li>New: Support of message type property for dialogs.</li>
+                    <li>New: Label factory method</li>
+                    <li>Enhancement: dialog titles are formatted strings now.</li>
+                    <li>New: ActionBuilder now registers itself with created ReflectionActions as REFLECTION_MESSAGE_PROVIDER to provide ReflectionAction with additional information as needed.</li>
+                </ul>
+            </li>
+            <li>
+                <code>IconManager</code> has been changed to better support SUN's default icons by supporting multiple paths.
+                This is not yet finnished 100% but works as long as you don't expect easy configuration.
+            </li>
+            <li>
+                <code>ReflectionAction</code> now can handle exceptions itself by declaring corresponding error messages for the ActionBuilder that
+                creates ReflectionActions.
+            </li>
+            <li>
+                <code>AbstractPrefs</code> supports setting the layout via the constructor now.
+            </li>
+        </ul>
+        <h3>Changes to previous releases</h3>
+        <ul>
+            <li>Versioning scheme changed to <code><var>majorVersion</var>.<var>minorVersionOrRelease</var>.<var>patchLevel</var></code>.</li>
+            <li>Build script has been modularized.</li>
+            <li>Sub build scripts have been unified, simplified and modularized.</li>
+        </ul>
+        <h3>Bug Fixes</h3>
+        <ul>
+            <li>Some typos in source code comments were fixed.</li>
+        </ul>
+        <h2>Release 0_7-beta-1 (2006-02-26)</h2>
+        <h3>New additions and features</h3>
+        <ul>
+            <li>Improved documentation of <code>TipOfTheDayManager</code>.</li>
+            <li>Shuffle methods for shuffling arrays.</li>
+            <li>Frequency methods for counting elements in arrays.</li>
+            <li>SQL utility classes, e.g. a <code>ResultSetTableModel</code> and a <code>CachedResultSetTableModel</code>.</li>
+        </ul>
+        <h3>Changes to previous releases</h3>
+        <ul>
+            <li>Preferences use <code>ColumnLayout</code> as default layout now, not <code>BoxLayout</code>.</li>
+        </ul>
+        <h3>Bug Fixes</h3>
+        <ul>
+            <li>Fixed tagging and latest doc linking in <code>build.xml</code>.</li>
+            <li>Fixed several typos.</li>
+            <li>Some filter methods were wrong and required filters matching the type instead of one of its super types.</li>
+            <li>Parameter names and method descriptions for Collection methods have been harmonized.</li>
+            <li>Fixed some bugs where the documentation was not in sync with the library.</li>
+        </ul>
+        <h2>Release 0_6-alpha-2 (2006-02-14)</h2>
+        <h3>New additions and features</h3>
+        <ul>
+            <li><code>TipOfTheDayManager</code> supports <code>META-INF/services</code>.</li>
+        </ul>
+        <h3>Bug Fixes</h3>
+        <ul>
+            <li>Some Property keys were wrong in <code>TipOfTheDayManager</code>.</li>
+        </ul>
+        <h2>Release 0_6-alpha-1 (2006-02-12)</h2>
+        <h3>New additions and features</h3>
+        <ul>
+            <li>
+                The new package <code>net.sf.japi.swing.treetable</code> contains an implementation of a TreeTable concept.
+                It combines the concepts of <code>TreeModel</code> and <code>TableModel</code> in a <code>TreeTableModel</code>.
+            </li>
+            <li>
+                The new package <code>net.sf.japi.swing.prefs.keys</code> contains an implementation of <code>net.sf.japi.swing.prefs.Prefs</code> for
+                changing the keyboard shortcut (accelerator) assignments of an application that uses <code>net.sf.japi.swing.ActionBuilder</code>.
+            </li>
+        </ul>
+        <h3>Important Changes to previous releases</h3>
+        <ul>
+            <li>
+                The key / subkey delimiter for <code>net.sf.japi.swing.ActionBuilder</code> keys has changed from "<code>_</code>" to "<code>.</code>".
+                The reason for this is that the "<code>.</code>"-delimiter is more Java-like.
+                This makes the subkeys of keys in Properties files more look like Java properties.
+            </li>
+        </ul>
+        <h3>Other Changes</h3>
+        <ul>
+            <li>The libraries for the antmeat task have been upgraded so the antmeat task works again.</li>
+            <li>
+                Several classes in the code have been reworked for higher code quality:
+                <ul>
+                    <li>The order of symbols has been rearranged in many classes so symbols in the source code should be easier to find now.</li>
+                    <li>
+                        The handling of <code>null</code> has been improved significantly.
+                        <ul>
+                            <li>
+                                More checks for <code>null</code> have been added, throwing <code>NullPointerException</code>.
+                                This helps finding the code location that wrongly passed <code>null</code> in many cases.
+                            </li>
+                            <li>
+                                <code>@Nullable</code> and <code>@NotNull</code> annotations have been added.
+                                They reside in <code>lib/annotations.jar</code>.
+                                Some IDEs will warn automatically if you assign a possibly <code>null</code> value to a <code>@NotNull</code> variable.
+                                <a href="http://www.jetbrains.com/">JetBrains IntelliJ IDEA</a> is such an IDE.
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        The i18n/l10n of the code has been improved.
+                        Several Strings that do not require localization have been marked as <code>@NonNls</code>.
+                        This annotation can also be found in <code>lib/annotations.jar</code>.
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </body>
+</html>

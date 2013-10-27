@@ -1,0 +1,134 @@
+JAPI README
+-----------
+
+This file contains some important information about JAPI.  You should read it
+first.
+
+
+TABLE OF CONTENTS
+* project description
+* project website
+* system requirements
+* file structure
+* build / installation (see file INSTALL)
+* maintainers / credits (see file CREDITS)
+* project news (see file NEWS)
+* mailing lists
+* license information (see file LICENSE)
+
+
+PROJECT DESCRIPTION
+
+JAPI is a library for Java developers.  Its intention is to make the creation
+of internationalized swing applications easier.  Additionally it contains
+several classes that its inventors think could be useful for other developers.
+
+
+PROJECT WEBSITE
+
+Project homepage: http://japi.sourceforge.net/
+Project website:  http://sourceforge.net/projects/japi/
+
+
+SYSTEM REQUIREMENTS
+
+Java 5.0
+    Previous versions of Java will not work.  JAPI uses Generics, autoboxing,
+    static imports, foreach loops, assertions and varargs quite a lot.
+
+Ant 1.6.5
+    Previous versions of Ant might work but are not tested.
+
+
+FILE STRUCTURE
+
+.cvsignore
+    Hidden file to keep generated files that reside outside dest/ and are not
+    part of the cvs repository out of cvs screen messages.
+
+build.xml
+    The build file to build the project with Ant.
+
+COPYING
+    JAPI license conditions.  Note: applies to JAPI only, not third party
+    libraries.
+
+CREDITS
+    List of project contributors.
+
+dest/
+    The directory containing generated files.
+
+developer.proprties
+    Optional file for changing default settings of the Ant build.  You won't
+    need to tweak this file for normal building.  But if you want to set or
+    override properties for build.xml, this is the place to put them.
+
+dist/
+    Generated directory containing distribution archives.
+
+lib/
+    Directory containing third part libraries used to build JAPI.  Please note
+    that these third party libraries have their own license conditions.  The
+    licenses of the third party libraries are included in the lib/ directory.
+
+LICENSE
+    File with license information.
+
+progs/
+    Small JAPI-based programs that are yet too small to be worth a project of
+    their own.
+
+project.properties
+    File with automatically changed settings for Ant.
+
+src/
+    Source files.
+
+src/app/
+    Core JAPI library sources.
+
+src/doc/
+    Documentation source files (website).
+
+src/doc/guide/
+    Guide part of the documentation.  Also Contains useful JAPI usage examples.
+
+src/test/
+    Unit test suite for automated unit testing of JAPI.
+
+tools/
+    Small sometimes JAPI-based programs for use by JAPI developers.
+
+
+BUILD / INSTALLATION
+
+See the file INSTALL.
+
+
+MAINTAINERS / CREDITS
+
+See the file CREDITS
+
+
+PROJECT NEWS
+
+See the file NEWS
+
+
+MAILING LISTS
+
+JAPI mailing lists are the usual sourceforge hosted sourceforge project
+mailing lists.  The current mailing lists are:
+* japi-news@lists.sourceforge.net
+    News for JAPI users and developers (Low traffic, read only)
+* japi-devel
+    JAPI developer talk list
+* japi-cvs
+    cvs commit digest list (currently unused, and probably being replaced
+    by a corresponding svn commit digest list soon)
+
+
+LICENSE INFORMATION
+
+See the file LICENSE

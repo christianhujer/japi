@@ -1,0 +1,3 @@
+@ArgParserTest_MultipleOptionsFileSlave1
+@ArgParserTest_MultipleOptionsFileSlave2
+-i fooInput

@@ -1,0 +1,22 @@
+BUILDING / INSTALLING JAPI LIB LANG
+-----------------------------------
+
+
+Japi Lib Lang is a library for Java developers.  Because of that, installation
+is not applicable.  The rest of the file is concerned with building it only.
+
+To build Japi Lib Lang, you need Java 5.0 and Ant 1.6.5.  The applications you
+build using Japi Lib Lang will need Java 5.0 or newer and of course Japi
+Lib Lang.
+
+
+To build Japi Lib Lang, just run ant in the project's root directory or
+specifying the build.xml in the project's root directory.  To find out, what
+other options you have for building Japi Lib Lang, try "ant -projecthelp".
+
+
+Usually, you'd just want to use Japi Lib Lang in your favorite IDE and include
+all those Japi Lib Lang classes that you used directly or indirectly in your
+build.  To do so, the easiest way usually is this:
+1. Create a .jar file with the Japi Lib Lang classes by running "ant dist".
+2. Include that .jar file in the classpath of your IDE.

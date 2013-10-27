@@ -1,0 +1,13 @@
+The following people have contributed directly to JAPI:
+
+* Christian Hujer <chris@itcqis.com>
+    Inventor, creator, maintainer
+
+* Daniel Viegas <derdanny@sourceforge.net>
+    Several contributions, suggestions for enhancements and feedback
+
+
+JAPI wouldn't exist without the following projects:
+
+* KEduca, which is part of the KDE EDU package and inspired of writing a clone of it in Java, which much of JAPI was derived from.
+* Daimonin, an MMORPG, that has a Map Editor written in Java which became JAPI's second application and made JAPI much more mature.

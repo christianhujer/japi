@@ -1,0 +1,2 @@
+* tools.jar should be auto-referenced for javadoc.
+* Separate lib and lib.auto from each other.

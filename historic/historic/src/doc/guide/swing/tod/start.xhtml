@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: start.xhtml,v 1.3 2006/02/15 00:47:15 christianhujer Exp $ -->
+<!DOCTYPE html PUBLIC "-//JAPI//DTD XHTML 1.1 + XInclude 1.0//EN" "../../../../dtd/xhtml11_xinclude10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta name="Date" content="$Date: 2006-08-23 05:19:51 +0530 (Mi, 23. Aug 2006) $" />
+        <title>JAPI: Using TipOfTheDayManager</title>
+        <!--xi:include parse="xml" href="src/net/sf/japi/examples/editor/Editor.java.xhtml" xpointer="/1/1/1" /-->
+    </head>
+    <body>
+        <p>
+            This part of the guide demonstrates how to use the TipOfTheDayManager to extend your application with Tip Of The Days.
+        </p>
+        <p>
+            The <code>TipOfTheDayManager</code> allows you to easily add Tip Of The Days to your application.
+        </p>
+        <fieldset class="screenshot">
+            <legend>Screenshots of sample application</legend>
+            <img src="tod.en.png" alt="Screenshot of sample tip of the day (English)" class="screenshot" />
+            <img src="tod.de.png" alt="Screenshot of sample tip of the day (German)" class="screenshot" />
+        </fieldset>
+        <h2>Complete source</h2>
+        <h3>Java Source</h3>
+        <p>Location: ex/App.class</p>
+        <pre class="listing"><xi:include href="src/ex/App.java.xhtml" xpointer="/1/2/1/1" /></pre>
+        <h3>Properties</h3>
+        <p>Location: ex/tod.properties</p>
+        <pre class="listing"><xi:include href="src/ex/tod.properties" parse="text"/></pre>
+        <p>Location: ex/action.properties</p>
+        <pre class="listing"><xi:include href="src/ex/action.properties" parse="text"/></pre>
+        <h3>Services</h3>
+        <p>Location: META-INF/services/net.sf.japi.swing.tod</p>
+        <pre class="listing"><xi:include href="src/META-INF/services/net.sf.japi.swing.tod" parse="text"/></pre>
+        <h2>Conclusion</h2>
+        <p>
+            It never was that easy!
+        </p>
+        <h2>Alternatives</h2>
+        <p>
+            Currently, the TipOfTheDayManager supports two ways to specify the properties containing the tips, queried in exactly that order:
+        </p>
+        <ol>
+            <li>System Property <code>net.sf.japi.swing.tod</code></li>
+            <li>File <code>META-INF/services/net.sf.japi.swing.tod</code></li>
+        </ol>
+    </body>
+</html>

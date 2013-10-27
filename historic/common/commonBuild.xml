@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2009  Christian Hujer.
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation; either
+  ~ version 2.1 of the License, or (at your option) any later version.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  -->
+
+<!-- vim:set filetype=ant: -->
+<!--
+  ~ Common build.xml for use in multiple projects.
+  ~
+  ~ The source structure of a project must be like this:
+  ~ * src/prj - the production source
+  ~   supported files:
+  ~   - **/*.java (compiled)
+  ~   - **/*.properties (copied)
+  ~   - META-INF/services/** (copied)
+  ~ * src/tst - the unit test source
+  ~   supported files:
+  ~   - **/*.java (compiled)
+  ~   - **/*.properties (copied)
+  ~ * src/doc - the documentation source (not for javadoc, but for hypertext documentation, e.g. examples)
+  ~   currently ignored except in checkstyle
+  ~
+  ~ The destination structure of a project (generated files) will be:
+  ~ * dist/** - contains distribution archives
+  ~ * classes/** - contains compiled classes
+  ~
+  ~ Note:
+  ~ Taskdefs and targets are sorted alphabetically.
+  ~ Properties are also sorted alphabetically unless they depend on each other.
+  ~
+  ~ @author <a href="mailto:cher@riedquat.de">Christian Hujer</a>
+  -->
+
+<!-- The file developer.properties allows developers to override defaults.
+  ~ For building it is optional.
+  ~ It is only required for specific ant tasks like freshmeat.
+  -->
+<property file="developer.properties" />
+
+<!-- If the developer did not specify a location for the package information of the java api documentation, try this one. -->
+<property name="user.javadoc.link" value="${java.home}/../docs/api/" />
+
+<!-- The file module.properties must exist in each module that is built using common. -->
+<property file="module.properties" prefix="module" />
+
+<basename property="dir.version" file="${user.dir}" />
+<dirname property="parent" file="${user.dir}" />
+<property name="japiUserPath" value="${user.home}/.japi" />
+<basename property="parentRegion" file="${parent}" />
+<exec outputproperty="svnversion" executable="svnversion">
+    <env key="LC_ALL" value="C" />
+</exec>
+<condition property="module.version" value="trunk-${svnversion}">
+    <equals arg1="trunk" arg2="${dir.version}" />
+</condition>
+<condition property="module.version" value="branch-${dir.version}-${svnversion}">
+    <equals arg1="branches" arg2="${parentRegion}" />
+</condition>
+<condition property="module.version" value="${dir.version}">
+    <equals arg1="tags" arg2="${parentRegion}" />
+</condition>
+<property name="module.version" value="${parentRegion}-${dir.version}-${svnversion}" />
+
+<property name="commonPath" value="common" />
+<property name="distName" value="${module.name}-${module.version}" />
+<property name="distPath" value="dist/${distName}" />
+<property name="javaversion" value="1.5" />
+
+<path id="class.path">
+    <fileset dir="." includes="lib/*.jar" excludes="lib/LICENSE-*.jar" />
+    <fileset dir="${commonPath}" includes="lib/*.jar" excludes="lib/LICENSE-*.jar" />
+    <fileset dir="${japiUserPath}" includes="antlib.auto/findbugs-1.3.8/lib/findbugs.jar" />
+</path>
+
+<available property="has3rdparty" file="lib/annotations.jar" />
+<available property="hasJava2html" file="${japiUserPath}/antlib.auto/java2html.jar" />
+<available property="hasAntmeat" file="${japiUserPath}/antlib.auto/antmeat.jar" />
+<available property="hasCheckstyle" file="${japiUserPath}/antlib.auto/checkstyle-all-4.4.jar" />
+<available property="hasJunit" file="${japiUserPath}/antlib.auto/junit.jar" />
+<available property="hasPack200" file="${japiUserPath}/antlib.auto/Pack200Task.jar" />
+<available property="hasPmd" file="${japiUserPath}/antlib.auto/pmd-4.2.5.jar" />
+<available property="hasTaglets" file="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+<available property="hasFindbugs" file="${japiUserPath}/antlib.auto/findbugs-1.3.8/lib/findbugs-ant.jar" />
+
+<!-- targets are sorted alphabetically. -->
+
+<target
+    name        = "all"
+    description = "incrementally executes all standard build targets."
+    depends     = "compile, test"
+/>
+
+<target name="get3rdparty" unless="has3rdparty">
+    <get src="http://downloads.sourceforge.net/japi/annotations.jar" dest="lib/annotations.jar" usetimestamp="true" />
+    <get src="http://downloads.sourceforge.net/japi/LICENSE-annotations.jar" dest="lib/LICENSE-annotations.jar" usetimestamp="true" />
+</target>
+
+<target name="getPack200" unless="hasPack200">
+    <mkdir dir="${japiUserPath}/antlib.auto" />
+    <get src="https://java-pack200-ant-task.dev.java.net/files/documents/1526/6272/ant-task.zip" dest="${japiUserPath}/antlib.auto/ant-task.zip" usetimestamp="true" />
+    <unzip src="${japiUserPath}/antlib.auto/ant-task.zip" dest="${japiUserPath}/antlib.auto">
+        <patternset includes="**/*Pack200Task.jar" />
+        <mapper type="flatten" />
+    </unzip>
+</target>
+
+<target name="getAntmeat" unless="hasAntmeat">
+    <mkdir dir="${japiUserPath}/antlib.auto" />
+    <get src="http://downloads.sourceforge.net/antmeat/antmeat-0.3.zip" dest="${japiUserPath}/antlib.auto/antmeat-0.3.zip" usetimestamp="true" />
+    <unzip src="${japiUserPath}/antlib.auto/antmeat-0.3.zip" dest="${japiUserPath}/antlib.auto">
+        <patternset includes="**/*.jar" />
+    </unzip>
+    <move file="${japiUserPath}/antlib.auto/antmeat-0.3/antmeat.jar" tofile="${japiUserPath}/antlib.auto/antmeat.jar" />
+    <delete dir="${japiUserPath}/antlib.auto/antmeat-0.3/" />
+    <get src="http://mirror.serversupportforum.de/apache/ws/xmlrpc/binaries/xmlrpc-3.1.1-bin.tar.gz" dest="${japiUserPath}/antlib.auto/xmlrpc-3.1.1-bin.tar.gz" usetimestamp="true" />
+    <untar compression="gzip" src="${japiUserPath}/antlib.auto/xmlrpc-3.1.1-bin.tar.gz" dest="${japiUserPath}/antlib.auto">
+        <patternset includes="**/*.jar" excludes="**/*sources*.jar,**/*javadoc*.jar" />
+        <mapper type="flatten" />
+    </untar>
+</target>
+
+<target
+    name        = "announce"
+    description = "announce new version on freshmeat.net"
+    depends     = "getAntmeat"
+>
+    <taskdef name="freshmeat"  classpath="${japiUserPath}/antlib.auto/antmeat.jar"     classname="de.frewert.ant.freshmeat.Announcement" />
+    <echo>Announcing. Press return to start announcing this release at FreshMeat.</echo>
+    <input />
+    <echo><![CDATA[
+    <freshmeat
+        username = "${user.freshmeat.username}"
+        password = "${user.freshmeat.password}"
+    >
+        <printlicenses/>
+        <printreleasefoci/>
+        <publish
+            projectname = "japi"
+            branchname  = "${module.name}"
+            version     = "${module.version}"
+            focus       = "${module.update.focus}"
+        >
+            <changes file="LatestNews" />
+            <urlblock
+                homepage    = "http://japi.sourceforge.net/"
+                cvs         = "http://cvs.sourceforge.net/viewcvs.py/japi/"
+                mailinglist = "http://sourceforge.net/mailarchive/forum.php?forum=japi-users"
+                tgz         = "http://prdownloads.sourceforge.net/japi/${distName}.src.tar.gz?download"
+                bz2         = "http://prdownloads.sourceforge.net/japi/${distName}.src.tar.bz2?download"
+                zip         = "http://prdownloads.sourceforge.net/japi/${distName}.src.zip?download"
+            />
+        </publish>
+    </freshmeat>
+    ]]></echo>
+</target>
+
+<target name="getCheckstyle" unless="hasCheckstyle">
+    <mkdir dir="${japiUserPath}/antlib.auto" />
+    <get src="http://downloads.sourceforge.net/checkstyle/checkstyle-4.4.tar.gz" dest="${japiUserPath}/antlib.auto/checkstyle-4.4.tar.gz" usetimestamp="true" />
+    <untar src="${japiUserPath}/antlib.auto/checkstyle-4.4.tar.gz" dest="${japiUserPath}/antlib.auto" compression="gzip">
+        <patternset includes="checkstyle-4.4/checkstyle-all-4.4.jar" />
+    </untar>
+    <move file="${japiUserPath}/antlib.auto/checkstyle-4.4/checkstyle-all-4.4.jar" tofile="${japiUserPath}/antlib.auto/checkstyle-all-4.4.jar" />
+    <delete dir="${japiUserPath}/antlib.auto/checkstyle-4.4/" />
+</target>
+
+<target name="checkstyle" description="Runs checkstyle over the source code." depends="getCheckstyle">
+    <taskdef classpath="${japiUserPath}/antlib.auto/checkstyle-all-4.4.jar" resource="checkstyletask.properties" />
+    <checkstyle
+        config="${commonPath}/sun_checks.xml"
+    >
+        <fileset dir="src/doc" includes="**/*.java,**/*.properties" />
+        <fileset dir="src/prj" includes="**/*.java,**/*.properties" />
+        <fileset dir="src/tst" includes="**/*.java,**/*.properties" />
+    </checkstyle>
+</target>
+
+<target
+    name        = "clean"
+    description = "Cleans Sandbox"
+>
+    <delete dir="classes" />
+    <delete dir="dist" />
+    <delete dir="docs" />
+</target>
+
+<target name="compile" description="Compiles this module." depends="get3rdparty">
+    <mkdir dir="classes/production/${module.shortname}" />
+    <javac
+        srcdir="src/prj"
+        destdir="classes/production/${module.shortname}"
+        encoding="utf-8"
+        source="${javaversion}"
+        target="${javaversion}"
+        debug="yes"
+    >
+        <compilerarg value="-Xlint:all" />
+        <classpath refid="class.path" />
+        <exclude name="**/package-info.java" />
+    </javac>
+    <copy
+        todir="classes/production/${module.shortname}"
+    >
+        <fileset dir="src/prj" includes="net/**/*.properties" />
+        <fileset dir="src/prj" includes="net/**/*.xml" />
+        <fileset dir="src/prj" includes="META-INF/services/**" />
+        <fileset dir="lib" includes="LICENSE-*" />
+    </copy>
+    <copy
+        file="COPYING"
+        tofile="classes/production/${module.shortname}/LICENSE-${module.shortname}"
+    />
+</target>
+
+<target
+    name        = "build"
+    description = "Creates and packs the main archive."
+    depends     = "buildApp, buildLib"
+/>
+
+<target
+    name        = "buildApp"
+    depends     = "compile"
+    if          = "module.main.class"
+>
+    <mkdir dir="dist" />
+    <jar destfile="${distPath}.jar">
+        <zipfileset dir="classes/production/${module.shortname}" />
+        <zipgroupfileset dir="lib" includes="*.jar" excludes="LICENSE-*.jar" />
+        <manifest>
+            <attribute name="Main-Class"   value="${module.main.class}" />
+            <attribute name="Implementation-Title"   value="${module.name}" />
+            <attribute name="Implementation-Vendor"  value="Christian Hujer + the JAPI Developers" />
+            <attribute name="Implementation-Version" value="${module.version}" />
+            <attribute name="Implementation-URL"     value="http://sourceforge.net/projects/japi/" />
+            <section name="${module.package.path}">
+                <attribute name="Package-Title"   value="${module.package}" />
+                <attribute name="Package-Version" value="${module.version}" />
+                <attribute name="Package-Vendor"  value="Christian Hujer + the JAPI Developers" />
+            </section>
+        </manifest>
+    </jar>
+</target>
+
+<target
+    name        = "buildLib"
+    depends     = "compile"
+    unless      = "module.main.class"
+>
+    <mkdir dir="dist" />
+    <jar destfile="${distPath}.jar">
+        <zipfileset dir="classes/production/${module.shortname}" />
+        <manifest>
+            <attribute name="Implementation-Title"   value="${module.name}" />
+            <attribute name="Implementation-Vendor"  value="Christian Hujer + the JAPI Developers" />
+            <attribute name="Implementation-Version" value="${module.version}" />
+            <attribute name="Implementation-URL"     value="http://sourceforge.net/projects/japi/" />
+            <section name="${module.package.path}">
+                <attribute name="Package-Title"   value="${module.package}" />
+                <attribute name="Package-Version" value="${module.version}" />
+                <attribute name="Package-Vendor"  value="Christian Hujer + the JAPI Developers" />
+            </section>
+        </manifest>
+    </jar>
+</target>
+
+<target
+    name        = "dist"
+    description = "Creates and packs distribution archives."
+    depends     = "clean, compile, test, doc, build, getPack200"
+>
+    <taskdef name="pack200"    classpath="${japiUserPath}/antlib.auto/Pack200Task.jar" classname="com.sun.tools.apache.ant.pack200.Pack200Task" />
+    <taskdef name="unpack200"  classpath="${japiUserPath}/antlib.auto/Pack200Task.jar" classname="com.sun.tools.apache.ant.pack200.Unpack200Task" />
+
+    <mkdir dir="dist" />
+    <parallel>
+        <tar tarfile="${distPath}.src.tar" longfile="gnu">
+            <tarfileset dir="." prefix="${module.name}-${module.version}">
+                <include name="src/**" />
+                <include name="${commonPath}/**" />
+                <exclude name="${japiUserPath}/antlib.auto/**" />
+                <include name="devlib/**" />
+                <include name="lib/**" />
+                <include name="*.iml,build.xml,module.properties" />
+                <include name="CHANGES,COPYING,CREDITS,INSTALL,LICENSE,MAINTAINERS,NEWS,README" />
+                <!-- TODO -->
+            </tarfileset>
+        </tar>
+        <zip destfile="${distPath}.src.zip">
+            <zipfileset dir="." prefix="${module.name}-${module.version}">
+                <include name="src/**" />
+                <include name="${commonPath}/**" />
+                <exclude name="${japiUserPath}/antlib.auto/**" />
+                <include name="devlib/**" />
+                <include name="lib/**" />
+                <include name="*.iml,build.xml,module.properties" />
+                <include name="CHANGES,COPYING,CREDITS,INSTALL,LICENSE,MAINTAINERS,NEWS,README" />
+                <!-- TODO -->
+            </zipfileset>
+        </zip>
+        <jar destfile="${distPath}.src.jar">
+            <zipfileset dir="." prefix="${module.name}-${module.version}">
+                <include name="src/**" />
+                <include name="${commonPath}/**" />
+                <exclude name="${japiUserPath}/antlib.auto/**" />
+                <include name="devlib/**" />
+                <include name="lib/**" />
+                <include name="*.iml,build.xml,module.properties" />
+                <include name="CHANGES,COPYING,CREDITS,INSTALL,LICENSE,MAINTAINERS,NEWS,README" />
+                <!-- TODO -->
+            </zipfileset>
+        </jar>
+        <tar tarfile="${distPath}.doc.tar" longfile="gnu">
+            <tarfileset dir="." prefix="${module.name}-${module.version}">
+                <include name="docs/**" />
+            </tarfileset>
+        </tar>
+        <zip destfile="${distPath}.doc.zip">
+            <zipfileset dir="." prefix="${module.name}-${module.version}">
+                <include name="docs/**" />
+            </zipfileset>
+        </zip>
+        <jar destfile="${distPath}.doc.jar">
+            <zipfileset dir="." prefix="${module.name}-${module.version}">
+                <include name="docs/**" />
+            </zipfileset>
+        </jar>
+    </parallel>
+    <parallel>
+        <gzip  src="${distPath}.src.tar" destfile="${distPath}.src.tar.gz" />
+        <bzip2 src="${distPath}.src.tar" destfile="${distPath}.src.tar.bz2" />
+        <gzip  src="${distPath}.doc.tar" destfile="${distPath}.doc.tar.gz" />
+        <bzip2 src="${distPath}.doc.tar" destfile="${distPath}.doc.tar.bz2" />
+        <pack200
+            src="${distPath}.jar"
+            destfile="${distPath}.pack.gz"
+            gzipoutput="true"
+            stripdebug="true"
+            effort="9"
+            keepfileorder="false"
+            modificationtime="latest"
+            deflatehint="false"
+        />
+    </parallel>
+    <delete file="${distPath}.src.tar" />
+    <delete file="${distPath}.doc.tar" />
+    <checksum format="MD5SUM">
+        <fileset dir="." includes="${distPath}*" />
+    </checksum>
+    <concat>
+        <fileset dir="." includes="${distPath}*.MD5" />
+    </concat>
+    <delete>
+        <fileset dir="." includes="${distPath}*.MD5" />
+    </delete>
+</target>
+
+<target name="getTaglets" unless="hasTaglets">
+    <get src="http://downloads.sourceforge.net/japi/japi-lib-taglets-0.1.0.jar" dest="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" usetimestamp="true" />
+</target>
+
+<target name="getJava2html" unless="hasJava2htmL">
+    <get src="http://www.java2html.de/java2html_50.zip" dest="${japiUserPath}/antlib.auto/java2html_50.zip" usetimestamp="true" />
+    <unzip src="${japiUserPath}/antlib.auto/java2html_50.zip" dest="${japiUserPath}/antlib.auto">
+        <patternset includes="java2html.jar" />
+    </unzip>
+</target>
+
+<target
+    name        = "doc"
+    description = "Creates public API documentation"
+    depends     = "getTaglets, getJava2html"
+>
+    <mkdir dir="docs/api" />
+    <javadoc
+        destdir     = "docs/api"
+        access      = "protected"
+        author      = "yes"
+        version     = "yes"
+        locale      = "en_US"
+        use         = "yes"
+        splitindex  = "yes"
+        windowtitle = "JAPI Library ${module.title} ${module.version} API documentation"
+        doctitle    = "JAPI&lt;br /&gt;Yet another Java API&lt;br /&gt;Library ${module.title} ${module.version} API documentation"
+        header      = "JAPI Library ${module.title} ${module.version}&lt;br /&gt;API Documentation"
+        footer      = "JAPI&lt;br /&gt;Yet another Java API&lt;br /&gt;Library ${module.title} ${module.version} API documentation"
+        bottom      = "&lt;div style=&quot;text-align:center;&quot;&gt;&#169; 2005-2009 Christian Hujer. All rights reserved. See &lt;a href=&quot;{@docRoot}/copyright.html&quot;&gt;copyright&lt;/a&gt;&lt;/div&gt;"
+        serialwarn  = "yes"
+        charset     = "utf-8"
+        docencoding = "utf-8"
+        encoding    = "utf-8"
+        source      = "1.5"
+        linksource  = "yes"
+    >
+        <!--
+        overview    = "src/overview.html"
+        -->
+        <classpath refid="class.path" />
+        <link offline="true" href="http://java.sun.com/javase/6/docs/api/" packagelistLoc="${java.home}/../docs/api/" />
+        <packageset
+            dir="src/prj"
+            defaultexcludes="yes"
+        />
+        <taglet name="net.sf.japi.taglets.FixmeTaglet"         path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.HistoryTaglet"       path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.InvariantTaglet"     path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.NoteTaglet"          path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.PostconditionTaglet" path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.PreconditionTaglet"  path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.ReturnValueTaglet"   path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.TodoTaglet"          path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.WarningTaglet"       path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.XxxTaglet"           path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.IncludeTaglet"       path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar;${japiUserPath}/antlib.auto/java2html.jar" />
+        <taglet name="net.sf.japi.taglets.ListingTaglet"       path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar;${japiUserPath}/antlib.auto/java2html.jar" />
+    </javadoc>
+</target>
+
+<target
+    name        = "privateDoc"
+    description = "Creates private documentation"
+    depends     = "getTaglets, getJava2html"
+>
+    <mkdir dir="docs/private" />
+    <javadoc
+        destdir     = "docs/private"
+        access      = "private"
+        author      = "yes"
+        version     = "yes"
+        locale      = "en_US"
+        use         = "yes"
+        splitindex  = "yes"
+        windowtitle = "JAPI Library ${module.title} ${module.version} private documentation"
+        doctitle    = "JAPI&lt;br /&gt;Yet another Java API&lt;br /&gt;Library ${module.title} ${module.version} private documentation"
+        header      = "JAPI Library ${module.title} ${module.version}&lt;br /&gt;private Documentation"
+        footer      = "JAPI&lt;br /&gt;Yet another Java API&lt;br /&gt;Library ${module.title} ${module.version} private documentation"
+        bottom      = "&lt;div style=&quot;text-align:center;&quot;&gt;&#169; 2005-2009 Christian Hujer. All rights reserved. See &lt;a href=&quot;{@docRoot}/copyright.html&quot;&gt;copyright&lt;/a&gt;&lt;/div&gt;"
+        serialwarn  = "yes"
+        charset     = "utf-8"
+        docencoding = "utf-8"
+        encoding    = "utf-8"
+        source      = "1.5"
+        linksource  = "yes"
+    >
+        <!--
+        overview    = "src/overview.html"
+        -->
+        <classpath refid="class.path" />
+        <classpath location="${japiUserPath}/antlib.auto/junit.jar" />
+        <link offline="true" href="http://java.sun.com/javase/6/docs/api/" packagelistLoc="${java.home}/../docs/api/" />
+        <packageset dir="src/doc" defaultexcludes="yes" />
+        <packageset dir="src/prj" defaultexcludes="yes" />
+        <packageset dir="src/tst" defaultexcludes="yes" />
+        <taglet name="net.sf.japi.taglets.FixmeTaglet"         path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.HistoryTaglet"       path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.InvariantTaglet"     path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.NoteTaglet"          path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.PostconditionTaglet" path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.PreconditionTaglet"  path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.ReturnValueTaglet"   path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.TodoTaglet"          path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.WarningTaglet"       path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.XxxTaglet"           path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar" />
+        <taglet name="net.sf.japi.taglets.IncludeTaglet"       path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar;${japiUserPath}/antlib.auto/java2html.jar" />
+        <taglet name="net.sf.japi.taglets.ListingTaglet"       path="${japiUserPath}/antlib.auto/japi-lib-taglets.jar;${japiUserPath}/antlib.auto/java2html.jar" />
+    </javadoc>
+</target>
+
+<target name="test" description="Performs all tests (static and dynamic)" depends="checkstyle, unittest, pmd" />
+
+<target name="getJunit" unless="hasJunit">
+    <get src="http://downloads.sourceforge.net/junit/junit-4.5.jar" dest="${japiUserPath}/antlib.auto/junit.jar" usetimestamp="true" />
+</target>
+
+<target name="unittest" description="Performs JUnit tests." depends="compile, getJunit">
+    <mkdir dir="classes/test/${module.shortname}" />
+    <mkdir dir="docs/test" />
+    <javac
+        srcdir="src/tst"
+        destdir="classes/test/${module.shortname}"
+        encoding="utf-8"
+        source="${javaversion}"
+        target="${javaversion}"
+        debug="yes"
+    >
+        <compilerarg value="-Xlint:all" />
+        <classpath refid="class.path" />
+        <classpath location="${japiUserPath}/antlib.auto/junit.jar" />
+        <classpath location="classes/production/${module.shortname}" />
+        <exclude name="**/package-info.java" />
+    </javac>
+    <copy
+        todir="classes/test/${module.shortname}"
+    >
+        <fileset dir="src/tst" includes="test/**/*.properties" />
+    </copy>
+    <junit printsummary="yes" haltonfailure="yes">
+        <classpath refid="class.path" />
+        <classpath location="${japiUserPath}/antlib.auto/junit.jar" />
+        <classpath location="classes/production/${module.shortname}" />
+        <classpath location="classes/test/${module.shortname}" />
+        <formatter type="plain" />
+        <formatter type="xml" />
+        <batchtest todir="docs/test">
+            <fileset dir="src/tst">
+                <include name="test/**/*Test.java" />
+                <exclude name="test/**/Abstract*Test.java" />
+            </fileset>
+        </batchtest>
+    </junit>
+    <junitreport todir="docs/test">
+        <fileset dir="docs/test">
+            <include name="TEST-*.xml" />
+        </fileset>
+        <report format="frames" todir="docs/test" />
+    </junitreport>
+</target>
+
+<target name="getPmd" unless="hasPmd">
+    <mkdir dir="${japiUserPath}/antlib.auto" />
+    <get src="http://downloads.sourceforge.net/pmd/pmd-bin-4.2.5.zip" dest="${japiUserPath}/antlib.auto/pmd-bin-4.2.5.zip" usetimestamp="true" />
+    <unzip src="${japiUserPath}/antlib.auto/pmd-bin-4.2.5.zip" dest="${japiUserPath}/antlib.auto">
+        <patternset includes="**/lib/pmd-4.2.5.jar" />
+        <patternset includes="**/lib/jaxen-1.1.1.jar" />
+        <patternset includes="**/lib/asm-3.1.jar" />
+        <mapper type="flatten" />
+    </unzip>
+</target>
+
+<target name="pmd" description="Performs quality checks using PMD." depends="compile,getPmd">
+    <taskdef name="pmd" classpath="${japiUserPath}/antlib.auto/pmd-4.2.5.jar" classname="net.sourceforge.pmd.ant.PMDTask"/>
+    <pmd shortFilenames="true" failOnError="true" failOnRuleViolation="true">
+        <auxclasspath refid="class.path" />
+        <auxclasspath location="${japiUserPath}/antlib.auto/junit.jar" />
+        <auxclasspath location="classes/production/${module.shortname}" />
+        <auxclasspath location="classes/test/${module.shortname}" />
+        <ruleset>${commonPath}/pmd_checks.xml</ruleset>
+        <formatter type="text" toConsole="true" />
+        <fileset dir="src/prj">
+            <include name="**/*.java"/>
+        </fileset>
+        <fileset dir="src/tst">
+            <include name="**/*.java"/>
+        </fileset>
+    </pmd>
+</target>
+
+<target name="getFindbugs" unless="hasFindbugs">
+    <mkdir dir="${japiUserPath}/antlib.auto" />
+    <get src="http://downloads.sourceforge.net/findbugs/findbugs-1.3.8.tar.gz" dest="${japiUserPath}/antlib.auto/findbugs-1.3.8.tar.gz" usetimestamp="true" />
+    <untar src="${japiUserPath}/antlib.auto/findbugs-1.3.8.tar.gz" dest="${japiUserPath}/antlib.auto" compression="gzip" />
+</target>
+
+<target name="findbugs" description="Performs quality checks using FindBugs." depends="compile,getFindbugs">
+    <taskdef classpath="${japiUserPath}/antlib.auto/findbugs-1.3.8/lib/findbugs-ant.jar" name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
+    <findbugs
+        home="${japiUserPath}/antlib.auto/findbugs-1.3.8/"
+        output="emacs"
+        reportLevel="low"
+    >
+        <sourcePath path="src/prj" />
+        <class location="classes/production/${module.shortname}" />
+        <auxClasspath refid="class.path" />
+    </findbugs>
+</target>

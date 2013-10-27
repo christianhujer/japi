@@ -1,0 +1,9 @@
+JAPI JMines LICENSE INFORMATION
+-------------------------------
+
+Japi JMines is licensed under GPL.
+See file COPYING.
+
+Japi JMines uses some third part libraries, especially for building.
+These libraries are contained in the lib/ directory and have their own licenses.
+See the corresponding LICENSE-*-files in the common/lib/ directory for the licenses of third party libraries.

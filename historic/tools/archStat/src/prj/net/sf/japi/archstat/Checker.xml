@@ -1,0 +1,171 @@
+<!--
+  ~ Copyright (C) 2009  Christian Hujer
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<config>
+    <fileTypes>
+        <filetype id="CSource"   match="^.+\.(c)$"               description="C Source Code" />
+        <filetype id="CHeader"   match="^.+\.(h)$"               description="C Header"/>
+        <filetype id="C"         groups="CSource CHeader"        description="C Language (Source and Header)"/>
+        <filetype id="AsmSource" match="^.+\.(s|src|asm|i|inc)$" description="Assembly Source Code"/>
+        <filetype id="AsmHeader" match="^.+\.(i|inc)$"           description="Assembly Header"/>
+        <filetype id="Asm"       groups="AsmSource AsmHeader"    description="Assembly Language (Source and Header)"/>
+        <filetype id="Java"      match="^.+\.(java)$"            description="Java Source"/>
+        <filetype id="Jpp"       match="^.+\.(jpp)$"             description="Jpp Source"/>
+        <filetype id="Curly"     groups="C Java Jpp"             description="Curly brace language source"/>
+        <filetype id="Makefile"  match="^(Makefile|.+\.mak)$"    description="Makefile" />
+        <filetype id="All"       groups="Curly Asm Makefile"     description="All files" />
+    </fileTypes>
+    <patterns>
+        <pattern
+            match="line"
+            messageType="WARNING"
+            name="bogusLintSuppression"
+            regex="/[/*] +lint"
+            message="Bogus lint suppression - lint suppression with no effect."
+            fileTypes="C"
+        >
+            The way the lint suppression is written causes the lint suppression to have no effect.
+        </pattern>
+        <pattern
+            match="line"
+            messageType="WARNING"
+            name="trailingWhitespace"
+            regex="[\p{javaWhitespace}&amp;&amp;[^\p{Zl}]]+?(\r\n|\r|\n)$"
+            message="Trailing whitespace."
+            fileTypes="All"
+        >
+            Trailing whitespace is redundant, hinders searching and can be a cause of merge problems.
+        </pattern>
+        <pattern
+            match="line"
+            messageType="WARNING"
+            name="unixLine"
+            regex="[^\r]\n$"
+            message="Unix line."
+            fileTypes="All"
+        >
+            Use DOS line endings only to make sure the files are editable with stanard windows editors.
+        </pattern>
+        <pattern
+            match="line"
+            messageType="WARNING"
+            name="platformIntegerType"
+            regex="\b(char|short|int|long)\b"
+            message="Platform integer type."
+            fileTypes="C"
+        >
+            You used a type of which the sign (char) or size may vary depending on the platform.
+            Instead use an ISO/IEC 9899:1999 integer type.
+        </pattern>
+        <pattern
+            match="line"
+            messageType="WARNING"
+            name="oldIntegerType"
+            regex="\b[US](08|16|32)_(EXACT|FAST)\b"
+            message="Old integer type."
+            fileTypes="C"
+        >
+            You used an old integer type.
+            Use ISO/IEC 9899:1999 integer types like uint8_t or int_fast32_t instead.
+        </pattern>
+        <pattern
+            match="line"
+            messageType="WARNING"
+            name="oldBooleanType"
+            regex="\bBOOL(_FAST)?\b"
+            message="Old boolean type."
+            fileTypes="C"
+        >
+            You used an old boolean type.
+            Use the ISO/IEC 9899:1999 type bool instead.
+        </pattern>
+        <pattern
+            match="line"
+            messageType="WARNING"
+            name="internalBooleanType"
+            regex="\b_Bool\b"
+            message="Internal boolean type."
+            fileTypes="C"
+        >
+            You used the internal boolean type directly.
+            Use the ISO/IEC 9899:1999 external type bool instead.
+        </pattern>
+        <pattern
+            match="line"
+            messageType="WARNING"
+            name="tab"
+            regex="\t"
+            message="Tab character."
+            fileTypes="Curly"
+        >
+            Do not use tab for indention.
+            Use spaces instead.
+            Hint: most editors can be configured to insert spaces instead of tabs.
+            The optimum configuration for an editor is:
+            indent 4 spaces if a user uses tab,
+            align to 8 if a tab is found in a file.
+        </pattern>
+        <pattern
+            match="line"
+            messageType="WARNING"
+            name="commentStart"
+            regex="/\*\*\s*?[\r\n]"
+            message="Documentation comment text doesn't start in first line of documentation comment."
+            fileTypes="Curly"
+        >
+            If you start a documentation comment, the text should start in the first line, not later, e.g.
+            /** Flushes the cache.
+             * ...
+             */
+        </pattern>
+        <pattern
+            match="line"
+            messageType="WARNING"
+            name="oldStyleComment"
+            regex="(\*{3,}|/{3,})"
+            message="Old style comment."
+            fileTypes="Curly"
+        />
+        <pattern
+            match="line"
+            messageType="WARNING"
+            name="krbraces"
+            regex="^[\p{javaWhitespace}&amp;&amp;[^\p{Zl}]]+?(\{|else|catch|finally)"
+            message="Bogus brace style found. Use K&amp;R brace style."
+            fileTypes="Curly"
+        >
+        </pattern>
+        <!--pattern
+            match="line"
+            messageType="WARNING"
+            name="spaces"
+            regex="^ "
+            message="Bogus indention in Makefile - use tabs, not spaces."
+            fileTypes="Makefile"
+        >
+        </pattern-->
+        <pattern
+            match="file"
+            messageType="WARNING"
+            name="fileComment"
+            regex="/\*\* [^.\n]\.$.*? \* @file.*?$ \*/$"
+            message="Malformed file header comment."
+            fileTypes="C"
+        >
+        </pattern>
+    </patterns>
+</config>

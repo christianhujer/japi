@@ -1,0 +1,9 @@
+JAPI LICENSE INFORMATION
+------------------------
+
+JAPI is licensed under GPL.  See file COPYING.
+
+JAPI uses some third part libraries, especially for building.  These libraries
+are contained in the lib/ directory and have their own licenses.  See the
+corresponding LICENSE-*-files in the lib/ directory for the licenses of third
+party libraries.

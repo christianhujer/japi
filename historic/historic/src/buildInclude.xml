@@ -1,0 +1,61 @@
+
+    <target
+        name        = "run"
+        description = "Runs the Example Application."
+        depends     = "pack"
+    >
+        <java
+            jar  = "${progName}.jar"
+            fork = "true"
+        />
+    </target>
+
+    <target
+        name        = "clean"
+        description = "Removes all auto-generated files."
+    >
+        <delete dir="classes" />
+        <delete file="${progName}.jar" />
+    </target>
+
+    <target
+        name        = "pack"
+        description = "Packs Example Application Jar Archive."
+        depends     = "compile"
+    >
+        <jar destfile="${progName}.jar">
+            <zipfileset dir="classes" />
+            <zipfileset dir="src">
+                <include name="**/*.properties" />
+                <include name="META-INF/**" />
+            </zipfileset>
+            <manifest>
+                <attribute name="Main-Class" value="${mainClass}"/>
+                <attribute name="Class-Path" value="${pathToRoot}/lib/jlfgr-1_0.jar ${pathToRoot}/dist/japi-${project.version}.lib.jar" />
+            </manifest>
+        </jar>
+    </target>
+
+    <target
+        name        = "compile"
+        description = "Compiles the Example Application."
+    >
+        <mkdir dir="classes" />
+        <javac
+            srcdir    = "src"
+            destdir   = "classes"
+            encoding  = "utf-8"
+            source    = "1.5"
+            target    = "1.5"
+            debug     = "yes"
+        >
+            <classpath>
+                <fileset dir="${pathToRoot}/lib">
+                    <include name="**/*.jar" />
+                    <exclude name="**/LICENSE-*.jar" />
+                </fileset>
+                <fileset dir="${pathToRoot}/dist" includes="japi-${project.version}.lib.jar"/>
+            </classpath>
+        </javac>
+    </target>
+

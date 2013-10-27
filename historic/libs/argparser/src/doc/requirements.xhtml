@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2009  Christian Hujer.
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation; either
+  ~ version 2.1 of the License, or (at your option) any later version.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>JAPI Lib ArgParser - Requirements</title>
+    </head>
+    <body>
+        <h1>JAPI Lib ArgParser - Requirements</h1>
+        <ul>
+            <li>
+                REQ001:
+                The library MUST provide option parsing.
+                Options start with a "-"-character.
+                Every option has a unique name.
+                A name that consists of a single letter is called short option.
+                A name that consists of more than one letter is called long option.
+            </li>
+            <li>
+                REQ002:
+                Optional options MUST be supported.
+                It MUST be possible to declare an option as optional.
+                If an optional option is omitted, the library MUST simply ignore that option.
+                If an optional option is specified, the library MUST handle the option properly.
+                User view: An optional option may be omitted.
+            </li>
+            <li>
+                REQ003:
+                Mandatory options MUST be supported.
+                It MUST be possible to declare an option as mandatory.
+                If a mandatory option is omitted, the library MUST NOT process the command.
+                If a mandatory option is specified, the library MUST handle the option properly.
+                User view: A mandatory option must not be omitted.
+            </li>
+            <li>
+                REQ004:
+                Terminating options MUST be supported.
+                It MUST be possible to declare an option as terminating.
+                A terminating option may be omitted.
+            </li>
+            <li>
+                REQ005:
+                The library MUST support i18n/l10n.
+            </li>
+            <li>
+                REQ006:
+                Options with names which consist of non-ASCII characters MUST be rejected.
+            </li>
+            <li>
+                REQ007:
+                It SHOULD be possible to concatenate multiple short options in a single option that looks like a long option starting with one dash.
+            </li>
+            <li>
+                REQ008:
+                Options that start with two dashs MUST always be treated as long options.
+            </li>
+            <li>
+                REQ009:
+                If an option that starts with a single dash is not recognized as a long option it SHOULD be treated as concatenated short options.
+                If treating it as concatenated short options fails, the option SHOULD be reported as unrecognized long option.
+            </li>
+            <li>
+                REQ00A:
+                It MUST be possible to stop further arguments from being parsed as options using the special option "--".
+            </li>
+            <li>
+                REQ00B:
+                It MUST be possible to declare an option as obsolete.
+                An obsolete option will usually perform only an empty operation.
+                The user will be warned if she uses an obsolete option.
+            </li>
+            <li>
+                REQ00C:
+                It MUST be possible to specify long options using -W.
+            </li>
+            <li>
+                REQ00D:
+                It MUST be possible to specify options in a file by prefixing the filename with '@'.
+            </li>
+        </ul>
+    </body>
+</html>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: start.xhtml,v 1.4 2006/02/16 14:59:29 derdanny Exp $ -->
+<!DOCTYPE html PUBLIC "-//JAPI//DTD XHTML 1.1 + XInclude 1.0//EN" "../../../../dtd/xhtml11_xinclude10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta name="Date" content="$Date: 2007-08-12 14:32:36 +0530 (So, 12. Aug 2007) $" />
+        <title>JAPI Guide: Swing Actions</title>
+    </head>
+    <body>
+        <h2>JAPI Swing Actions Introduction</h2>
+        <p>
+            The class <code>javax.swing.Action</code> is probably the most underestimated Swing entity ever.
+        </p>
+        <h3>How do Actions help with Swing GUI programming?</h3>
+        <p>
+            They help alot.
+            Let's start at the beginning.
+            You want to create a Swing UI application.
+            For user actions like <em>New</em> or <em>Open</em> you want to provide a <code>JMenu</code> named "File" with the corresponding <strong><code>JMenuItem</code>s</strong>.
+            The same actions should also be reachable via <strong><code>JButton</code>s</strong> in a <code>JToolBar</code>.
+            The menu items and the toolbar buttons should have the same keyboard shortcut, the same icon, the same label (except that the toolbar buttons shouldn't display their label), the same mnemonic and the same tooltip.
+        </p>
+        <h4>Step 0: Plain code</h4>
+        <p>
+            We take an example application with some basic actions that should look like this:
+        </p>
+        <fieldset class="screenshot">
+            <legend>Screenshots of sample application</legend>
+            <img src="screenshot1.png" alt="First screenshot of sample application" class="screenshot" />
+            <img src="screenshot2.png" alt="Second screenshot of sample application" class="screenshot" />
+        </fieldset>
+        <p>
+            Without actions, your code might look like this:
+        </p>
+        <pre class="listing">
+    ImageIcon iconNew = new ImageIcon("resources/new.png");
+    JMenuItem miNew = new JMenuItem("new", iconNew);
+    miNew.addActionListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+            // event handler code
+        }
+    });
+    miNew.setAccelerator(getKeyStroke("ctrl pressed N"));
+    miNew.setMnemonic(VK_N);
+    miNew.setToolTipText("Creates a new document.");
+    menuFile.add(miNew);
+
+    JButton buNew = new JButton(iconNew);
+    buNew.addActionListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+            // same event handler code as above
+        }
+    });
+    buNew.setMnemonic(VK_N);
+    buNew.setToolTipText("Creates a new document.");
+    toolBar.add(buNew);
+        </pre>
+        <p>
+            This kind of code is not very convenient.
+            It is very redundant.
+            Fixes and changes in the UI part need to be done at more than a single place.
+            And anonymous classes are bloat code, remember, an anonymous class in your code adds two classes to the binary - in this example it's
+            4 additional classes just for handling one application event.
+            If we look at a normal application, we'd have "new", "open", "save", "save as", "close", "quit", "about", "help", "cut", "copy", "paste"
+            and for sure some more actions, but if we just take these 11 that would mean 44 additional classes just for handling the ActionEvents:
+            11 kinds of events, * 2 because we have a button and a menu item, * 2 because an anonymous class is technically 2 classes.
+        </p>
+        <p>
+            Last but not least, imagine you need to disable the action.
+            With this kind of code you have to track all user interface elements, in this case the button and the menu item, and disable / enable them
+            all separately.
+        </p>
+        <h4>Step 1: Reusing <code>ActionListener</code></h4>
+        <p>
+            A first improvement could be to use the same ActionListener instance for both, the menu item and the toolbar button. This would already
+            reduce the number of action event handlers by 50%:
+        </p>
+        <pre class="listing">
+    final ActionListener alNew = new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+            // event handler code
+        }
+    };
+    ImageIcon iconNew = new ImageIcon("resources/new.png");
+    JMenuItem miNew = new JMenuItem("new", iconNew);
+    miNew.addActionListener(alNew);
+    miNew.setAccelerator(getKeyStroke("ctrl pressed N"));
+    miNew.setMnemonic(VK_N);
+    miNew.setToolTipText("Creates a new document.");
+    menuFile.add(miNew);
+
+    JButton buNew = new JButton(iconNew);
+    buNew.addActionListener(alNew);
+    buNew.setMnemonic(VK_N);
+    buNew.setToolTipText("Creates a new document.");
+    toolBar.add(buNew);
+        </pre>
+        <p>
+            This does not yet solve the redundancy of the UI element attributes like icon, tooltip or mnemonic, nor the need to still care about both
+            UI elements when disabling or enabling the action.
+        </p>
+        <h4>Step 2: Using <code>AbstractAction</code></h4>
+        <p>
+            Now let's have a look at the interface <code>Action</code>.
+            What's it?
+            Not much, but useful.
+            It's nothing but an extended <code>ActionListener</code> that additionally defines an interface for enabling and property handling.
+            <code>AbstractAction</code> is an implementation of <code>Action</code> and all its methods except, of course,
+            <code>actionPerformed()</code>.
+            Also, <code>Action</code> defines some interesting keys for properties / attributes that are commonly used for UI elements that trigger
+            ActionEvents: <code>ACCELERATOR_KEY</code> for the key stroke, <code>LONG_DESCRIPTION</code> for context sensitive help,
+            <code>MNEMONIC_KEY</code> for the mnemonic, <code>NAME</code> for the plain display label, <code>SHORT_DESCRIPTION</code> for the tooltip
+            text and <code>SMALL_ICON</code> for, well, the icon of course.
+        </p>
+        <p>
+            Not only are constructors of classes like <code>JButton</code> and <code>JMenuItem</code> overloaded to take <code>Action</code> arguments,
+            but also are the <code>add()</code> methods of <code>JMenu</code> and <code>JToolBar</code>, you don't even need to care about instanciating <code>JButton</code> or <code>JMenuItem</code>.
+        </p>
+        <p>
+            With this knowledge, we could use an AbstractAction instead of an ActionListener:
+        </p>
+        <pre class="listing">
+    final Action aNew = new AbstractAction("new", new ImageIcon("resources/new.png")) {
+        public void actionPerformed(final ActionEvent e) {
+            // event handler code
+        }
+    };
+    aNew.putValue(ACCELERATOR_KEY, getKeyStroke("ctrl pressed N"));
+    aNew.putValue(MNEMONIC_KEY, VK_N);
+    aNew.putValue(SHORT_DESCRIPTION, "Creates a new document.");
+
+    menuFile.add(aNew);
+    toolBar.add(aNew);
+        </pre>
+        <p>
+            Compare this with the first example: Hell, is this code short!
+            It's just half the number of lines of the first example.
+        </p>
+        <h2>How does JAPI make Actions even more useful?</h2>
+        <p>
+            We're still using an anonymous class.
+            JAPI provides a few classes that eliminate the need of anonymous classes or any additional classes for action event handling at all.
+            The JAPI classes for this are: <code>ActionBuilder</code>, <code>ReflectionAction</code>, <code>ToggleAction</code> and
+            <code>DummyAction</code>.
+            That's just four classes, giving you a class count break even point of two actions!
+        </p>
+        <p>
+            But that's not all, JAPI also cares about moving the action properties to preferences and properties files, thus caring about
+            <em>Internationalization</em> and <em>Localization</em>.
+            You could even provide a user interface that allows the user to configure specific aspects of actions, for instance the key strokes or the
+            icons.
+        </p>
+        <h3>ReflectionAction</h3>
+        <h4>Step 3: Using <code>ReflectionAction</code></h4>
+        <p>
+            <code>ReflectionAction</code> is an implementation of <code>AbstractAction</code> that uses Reflection to invoke a method.
+            Imagine the method is called "<code>newDocument()</code>" at the same object that creates the UI, then the code using <code>ReflectionAction</code> would look like this:
+        </p>
+        <pre class="listing">
+    final Action aNew = new ReflectionAction("new", new ImageIcon("resources/new.png"), "newDocument", this);
+    aNew.putValue(ACCELERATOR_KEY, getKeyStroke("ctrl pressed N"));
+    aNew.putValue(MNEMONIC_KEY, VK_N);
+    aNew.putValue(SHORT_DESCRIPTION, "Creates a new document.");
+
+    menuFile.add(aNew);
+    toolBar.add(aNew);
+        </pre>
+        <p>
+            The code gets shorter and shorter.
+            You've just traded all your anonymous class imlementations of ActionListener, Action or AbstractAction (remember: each anonymous class means two compiled classes) for a single additional class named ReflectionAction and thus significantly reduced your code size.
+        </p>
+        <p>
+            Isn't Reflection slow?
+            Well, speed is relative.
+            For one thing, Reflection is even used in Application Servers.
+            And for another thing, do you really believe the user can trigger actions at a speed where he will notice that your program uses Reflection
+            to handle the ActionEvents?
+        </p>
+        <h4>Step 4: Add internationalization and localization</h4>
+        <p>
+            To understand where <code>ActionBuilder</code> helps, we will extend our code with I18N (internationalization) and L10N (localization).
+            I18n means we change our code in a way that l10n is possible.
+            And l10n means we adapt our program for a certain locale specific environment, which mostly is the language of the user interface.
+        </p>
+        <pre class="listing">
+    final ResourceBundle bundle = getBundle("mypackage.action");
+    final Action aNew = new ReflectionAction(
+            bundle.getString("newDocument.text"),
+            new ImageIcon(bundle.getString("newDocument.icon"),
+            "newDocument", this);
+    aNew.putValue(ACCELERATOR_KEY, getKeyStroke(bundle.getString("newDocument.accel"));
+    aNew.putValue(MNEMONIC_KEY, getKeyStroke(bundle.getString("newDocument.mnemonic")).getKeyCode());
+    aNew.putValue(SHORT_DESCRIPTION, bundle.getString("newDocument.shortdescription"));
+
+    menuFile.add(aNew);
+    toolBar.add(aNew);
+        </pre>
+        <p>
+            All values are read from a properties file named "mypackage/action*.properties" now.
+            Such properties files could look like this:
+        </p>
+        <p>File <code>mypackage/action.properties</code></p>
+        <pre class="listing">
+    newDocument.text=new
+    newDocument.icon=resources/new.png
+    newDocument.accel=ctrl pressed N
+    newDocument.mnemonic=N
+    newDocument.shortdescription=Creates a new document
+        </pre>
+        <p>File <code>mypackage/action_de.properties</code></p>
+        <pre class="listing">
+    newDocument.text=neu
+    newDocument.shortdescription=Erzeugt ein neues Dokument
+        </pre>
+        <h3>Action Builder</h3>
+        <h4>Step 5: using <code>ActionBuilder</code></h4>
+        <p>
+            <code>ActionBuilder</code> is a Factory for Actions.
+            It will search a default and optionally additional property bundles for the corresponding key / value pairs.
+            With the same bundles, the i18n/l10n handling and usage of Reflection for the action method invocation will look like this:
+        </p>
+        <pre class="listing">
+    final ActionBuilder actionBuilder = ActionBuilder.getFactory("mypackage");
+    final Action aNew = actionBuilder.createAction(false, "newDocument", this);
+    menuFile.add(aNew);
+    toolBar.add(aNew);
+        </pre>
+        <p>
+            Now THAT is short code.
+        </p>
+        <h4>Step 6: using <code>ActionBuilder</code> for complete menus and toolbars</h4>
+        <p>
+            <code>ActionBuilder</code> can do even more for you.
+            It can create complete menus and toolbars.
+            Oh yes it does!
+            All you have to do is follow some simple naming conventions about your properties files.
+        </p>
+        <pre class="listing">
+    final ActionBuilder actionBuilder = ActionBuilder.getFactory("mypackage");
+    final JFrame frame = new JFrame(actionBuilder.getString("appWindow.title"));
+    frame.setJMenuBar(actionBuilder.createMenuBar(true, "app", this));
+    frame.add(actionBuilder.createToolBar("app"), NORTH);
+        </pre>
+        <h2>Final example: Application skeleton</h2>
+        <h4>Java Source: <code><a href="src/ex/Application.java">src/ex/Application.java</a></code></h4>
+        <pre class="listing"><xi:include parse="xml" href="src/ex/Application.java.xhtml" xpointer="/1/2/1/1" /></pre>
+        <h4>Default (English) bundle: <code><a href="src/ex/action.properties">src/ex/action.properties</a></code></h4>
+        <pre class="listing"><xi:include parse="text" encoding="iso-8859-1" href="src/ex/action.properties" /></pre>
+        <h4>German bundle: <code><a href="src/ex/action_de.properties">src/ex/action_de.properties</a></code></h4>
+        <pre class="listing"><xi:include parse="text" encoding="iso-8859-1" href="src/ex/action_de.properties" /></pre>
+        <p>
+            The source code distribution of JAPI of course also contains this example, along with a small <code>build.xml</code> to compile and run it.
+        </p>
+    </body>
+</html>

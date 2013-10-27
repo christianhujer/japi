@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2009  Christian Hujer
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <title></title>
+    </head>
+    <body>
+        <p>
+            This package contains several utility classes for making GUI programming with Swing less painful.
+            The most notable classes are:
+        </p>
+        <dl>
+            <dt>{@link net.sf.japi.swing.ActionBuilder}</dt>
+            <dd>
+                This class creates {@link javax.swing.Action} objects which call their final methods using {@link java.lang.reflect Reflection}, are localized using {@link java.util.ResourceBundle}s and user configurable using {@link java.util.prefs Preferences}.
+            </dd>
+            <dt>{@link net.sf.japi.swing.ToolBarLayout}</dt>
+            <dd>
+                If you use {@link javax.swing.JToolBar}, this is the layout you were always looking for.
+            </dd>
+            <dt>{@link net.sf.japi.progs.jeduca.swing.InternalFrameManager}, {@link net.sf.japi.progs.jeduca.swing.MenuManager}, {@link net.sf.japi.progs.jeduca.swing.ToolBarManager}</dt>
+            <dd>
+                If you want to give your users the power to modify the application appearance by moving, hiding, showing toolbars, menus etc., use
+                these.
+            </dd>
+        </dl>
+        <p>
+            A final note: Not all classes thats names end on "Manager" are derived from AbstractManager.
+            Have a look at the Tree instead of making that assumption.
+            For that reason, probably some of the class names will change in future.
+        </p>
+    </body>
+</html>

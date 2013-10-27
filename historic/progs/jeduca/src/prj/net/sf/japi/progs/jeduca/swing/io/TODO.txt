@@ -1,0 +1,2 @@
+Create caching AbstractImporter
+Think about an ExporterFileFilter

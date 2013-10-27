@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Example build file for Swing Key Preferences Example application. -->
+<!DOCTYPE project SYSTEM "../../../../../project.dtd">
+<project name="Swing Key Preferences Example" default="run">
+
+    <property name="pathToRoot" value="../../../../../.." />
+    <property name="progName"   value="App" />
+    <property name="mainClass"  value="ex.PrefsExampleApp" />
+    <property file="${pathToRoot}/project.properties" />
+
+    &include;
+
+</project>

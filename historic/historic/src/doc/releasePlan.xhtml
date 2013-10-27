@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: releasePlan.xhtml,v 1.6 2006/03/29 22:21:14 christianhujer Exp $ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta name="Date" content="$Date: 2007-08-12 14:32:36 +0530 (So, 12. Aug 2007) $" />
+        <title>JAPI Release Planning</title>
+    </head>
+    <body>
+        <h2>Release Plan</h2>
+        <p>
+            The following releases with the following changes and release dates are planned:
+        </p>
+        <dl>
+            <dt>2006-04-10: JAPI 0.9.0</dt>
+            <dd>
+                <ul>
+                    <li>Additions to ActionBuilder to support explicitely reading strings from the bundle, ignoring preferences.</li>
+                    <li>Final implementation of keystroke preferences.</li>
+                    <li>At least one example for using the net.sf.japi.sql package.</li>
+                </ul>
+            </dd>
+            <dt>2006-05-01: JAPI 0.10.0</dt>
+            <dd>
+                <ul>
+                    <li>Final implementation of proxy preferences.</li>
+                    <li>Final implementation of the C Preprocessor. Note: This will quite likely become a project of its own.</li>
+                    <li>Provide treetable usage example.</li>
+                </ul>
+            </dd>
+            <dt>2006-06-01: JAPI 0.11.0</dt>
+            <dd>
+                <ul>
+                    <li>Final implementation of JAPI's first treetable.</li>
+                    <li>Provide a splash screen implementation, which supports both, Java 6.0's new splash screen and a Java 5.0 fallback implementation, and implements progress so the user can be informed about application loading progress while the splash screen is displayed.</li>
+                </ul>
+            </dd>
+            <dt>2006-07-01: JAPI 0.12.0</dt>
+            <dd>
+                <ul>
+                    <li>
+                        Complete rework of ActionBuilder to support finer configuration and control and grouping of actions without increasing the usage effort or even decreasing it. The requirements are:
+                        <ul>
+                            <li>It must be possible to group actions under a name. This is required for the keystroke preferences.</li>
+                            <li>The API should become smaller, simpler and eventually more modular.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </dd>
+            <dt>2006-08-01: JAPI 0.13.0</dt>
+            <dd>
+                <ul>
+                    <li>Provide Locale preferences. They already exist in the Daimonin Editor and just need to be moved here.</li>
+                </ul>
+                Think whether and how changing the Locale during runtime could be possible.
+                The most notable issues are Strings handled <em>outside</em> actions that would need to be updated.
+                A convenient way would only be possible for applications that completely separate the model from visualization including all
+                i18n-Strings in a way that recreating the GUI during runtime is possible.
+            </dd>
+            <dt>2006-10-01: JAPI 0.14.0</dt>
+            <dd>
+                <ul>
+                    <li>
+                        Provide a complete suite of unit tests.
+                        The coverage should be good enough for regression testing.
+                        <br />
+                        Note: Currently (as of 2006-03-08) some unit tests already are developed, using JUnit 3.8.1.
+                        Migration to JUnit 4.0 waits until JUnit 4.0 runs with Ant as well as IntelliJ IDEA.
+                    </li>
+                </ul>
+            </dd>
+            <dt>2006-11-01: JAPI 0.15.0</dt>
+            <dd>
+                <ul>
+                    <li>This is a planned maintenance release before releasing the first stable version.</li>
+                </ul>
+            </dd>
+            <dt>2006-12-01: JAPI 1.0</dt>
+            <dd>
+                <ul>
+                    <li>Release first stable version.</li>
+                    <li>Branch for JAPI 2.0.</li>
+                </ul>
+            </dd>
+        </dl>
+        <h2>Unplanned features</h2>
+        <p>These features are planned but without time schedule.</p>
+        <ul>
+            <li>Bookmark handler</li>
+            <li>Font Chooser</li>
+            <li>Recent Files handler</li>
+            <li>Factory concept and Factories for components. Purpose: swing component creation that's configurable using properties files.</li>
+        </ul>
+        <h2>Misc</h2>
+        <p>
+            To see older versions of this release plan, look at <a href="http://svn.sourceforge.net/viewcvs.cgi/japi/trunk/src/doc/releasePlan.xhtml">$HeadURL: http://svn.code.sf.net/p/japi/code/historic/trunk/src/doc/releasePlan.xhtml $ in the svn repository</a>.
+        </p>
+    </body>
+</html>

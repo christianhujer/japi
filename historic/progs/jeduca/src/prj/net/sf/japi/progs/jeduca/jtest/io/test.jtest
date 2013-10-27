@@ -1,0 +1,30 @@
+<!DOCTYPE document SYSTEM "jtestv1.dtd">
+<document>
+    <info>
+        <title>Test-Test</title>
+        <category>Kategorie</category>
+        <type>3</type>
+        <level>1</level>
+        <language>de</language>
+        <author>
+            <name>Christian Hujer</name>
+            <email>chris@riedquat.de</email>
+            <www>http://japi.sourceforge.net/</www>
+        </author>
+    </info>
+    <data>
+        <QuestionText>
+            <text>Welche Festplatten sollten im &lt;em>LBA-mode&lt;/em> verwendet werden?</text>
+            <false>Als Slave verwendete Festplatten</false>
+            <false>Als Master verwendete Festplatten</false>
+            <false>Festplatten mit mehr als 1,2 GB</false>
+            <true>Festplatten mit mehr als 1024 Zylindern</true>
+            <false>UDMA66-fähige Festplatten</false>
+            <false>Keine der genannten</false>
+        </QuestionText>
+        <QuestionText qtype="regex">
+            <text>Mit welchem Befehl kann man einen Prozess mit veränderter Priorität starten?</text>
+            <regex>renice</regex>
+        </QuestionText>
+    </data>
+</document>

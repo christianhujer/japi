@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: wontFixes.xhtml,v 1.1 2006/03/03 21:57:27 christianhujer Exp $ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta name="Date" content="$Date: 2006-04-04 02:30:14 +0530 (Di, 04. Apr 2006) $" />
+        <title>JAPI Won't Fix List</title>
+    </head>
+    <body>
+        <p>
+            JAPI is not perfect. JAPI has some flaws. This page lists these known flaws along with reasons why they won't be fixed.
+        </p>
+        <dl>
+            <dt>GPL license</dt>
+            <dd>
+                That's not a flaw but a feature.
+                Writing non-free or non-open source programs that merely use JAPI is okay as long as you do not make changes to JAPI sources.
+                Please remember that donations are welcome.
+            </dd>
+            <dt>XML support for property files</dt>
+            <dd>
+                That's not a flaw in JAPI but a flaw in java.util.ResourceBundle, which only uses the properties capabilities, but not the XML
+                capabilities of the java.util.Properties class.
+                If you want this improved, talk to SUN or provide us with a patch.
+                Anyway, the resource bundle handling is a bit broken because it is hard to provide factories for other resource bundle storages without
+                "patching" the original Java.
+            </dd>
+        </dl>
+    </body>
+</html>

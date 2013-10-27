@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2009  Christian Hujer.
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation; either
+  ~ version 2.1 of the License, or (at your option) any later version.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta name="Date" content="$Date: 2006-11-26 16:38:11 +0100 (So, 26 Nov 2006) $" />
+        <title>JAPI Lib ArgParser: Guide</title>
+    </head>
+    <body>
+        <h1>JAPI Lib ArgParser: Guide</h1>
+        <p>
+            This guide shows you how to write Java programs that use JAPI Lib ArgParser.
+        </p>
+        <h2>Introduction</h2>
+        <p>
+            JAPI Lib ArgParser is a library that helps developers with command line parsing.
+            The primary target audience are Java developers that write Java programs that have a command line interface.
+        </p>
+        <p>
+            When writing a program that understands command line the basic question is how to pass options and arguments.
+            There are several requirements that most command line programs should meet.
+            To name just a few:
+        </p>
+        <ul>
+            <li>The order of options should not matter.</li>
+            <li>Short (single character) options should be concatenatable like -a, -b, -c to -abc.</li>
+            <li>The options -h, -help and --help should print a help text.</li>
+        </ul>
+        <h2>The Basic Concept</h2>
+        <p>
+            Implementing a Command with japi-lib-argparser is similar to implementing a thread, applet or j2ee session bean.
+            You create a class that implements the Command interface.
+            Usually you won't implement that interface directly but extend one of the classes like BasicCommand.
+        </p>
+        <pre class="java listing">package mycommand;
+
+import net.sf.japi.io.args.ArgParser;
+import net.sf.japi.io.args.BasicCommand;
+
+public class HelloCommand extends BasicCommand {
+
+    public static void main(final String... args) {
+        // Delegate command line processing to ArgParser.
+        ArgParser.simpleParseAndRun(new HelloCommand(), args);
+    }
+
+    public void run(final List&lt;String&gt; args) {
+        System.out.println("Hello, world!");
+    }
+}</pre>
+        <p>
+            This simple piece of code has a lot going under the hood.
+            ArgParser parses all options.
+            The list passed to <code>run()</code> is already processed and only holds the command line arguments with all options and all arguments to options already removed.
+            Without having specified options yourself, this command already knows the following options which it has inherited from its superclasses:
+        </p>
+        <ul>
+            <li>-h, --help: Prints a help text explaining all options.</li>
+            <li>--version: Prints command version information.</li>
+            <li>--exit: Specifies if the virtual machine shall be terminated with a return code when the command completed.</li>
+        </ul>
+        <p>
+            Just invoke your program with --help to see this.
+        </p>
+        <h2>Processing the remaining arguments</h2>
+        <p>
+            The <code>List&lt;String&gt;</code> passed to the <code>run()</code> method contains all remaining non-option command line arguments.
+            Looping over that for further processing is simple:
+        </p>
+        <pre>package mycommand;
+
+import net.sf.japi.io.args.ArgParser;
+import net.sf.japi.io.args.BasicCommand;
+
+public class GreetCommand extends BasicCommand {
+
+    public static void main(final String... args) {
+        ArgParser.simpleParseAndRun(new GreetCommand(), args);
+    }
+
+    public void run(final List&lt;String&gt; args) {
+        if (args.size() == 0) {
+            System.out.println("Hello, world!");
+        } else {
+            for (final String arg : args) {
+                System.out.format("Hello, %s!%n", arg);
+            }
+        }
+    }
+}</pre>
+        <h2>Adding your own Options</h2>
+        <p>
+            Imagine your program can optionally behave recursively.
+            You want the option to be <code>-r</code> in short form and <code>--recursive</code> in long form.
+        </p>
+        <pre>package mycommand;
+
+import net.sf.japi.io.args.ArgParser;
+import net.sf.japi.io.args.BasicCommand;
+
+public class RecursiveCommand extends BasicCommand {
+
+    private boolean recursive;
+
+    public static void main(final String... args) {
+        ArgParser.simpleParseAndRun(new RecursiveCommand(), args);
+    }
+
+    // This declares an optional option.
+    // The option has one short name: r.
+    // The option has one long name: recursive.
+    // It can be triggered as -r, -recursive, --recursive, -W recursive.
+    @Option({"r", "recursive"})
+    public void setRecursive() {
+        recursive = true;
+    }
+
+    public void run(final List&lt;String&gt; args) {
+        if (recursive) {
+            // ...
+        } else {
+            // ...
+        }
+    }
+}</pre>
+        <h2>Adding Options with arguments</h2>
+        <p>
+            Options also can have arguments.
+            For this, the method for the option simply has to declare a parameter.
+            Imagine, your command supports an option named "color" which takes a String as an argument.
+        </p>
+        <pre>package mycommand;
+
+import net.sf.japi.io.args.ArgParser;
+import net.sf.japi.io.args.BasicCommand;
+
+public class ColorCommand extends MyCommand {
+
+    private String color;
+
+    public static void main(final String... args) {
+        ArgParser.simpleParseAndRun(new GreetCommand(), args);
+    }
+
+    @Option({"c", "color"})
+    public void setColor(final String color) {
+        this.color = color;
+    }
+
+    public void run(final List&lt;String&gt; args) {
+        // ...
+    }
+}</pre>
+        <p>
+            The argument of the option method can be of any type for which ArgParser knows a conversion.
+            See the documentation of the class ConverterRegistry for a documentation of default supported types.
+        </p>
+    </body>
+</html>

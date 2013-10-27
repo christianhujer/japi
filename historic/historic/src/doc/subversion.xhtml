@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: releasePlan.xhtml,v 1.6 2006/03/29 22:21:14 christianhujer Exp $ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta name="Date" content="$Date: 2006-04-04 02:30:14 +0530 (Di, 04. Apr 2006) $" />
+        <title>JAPI Subversion Developer Access</title>
+    </head>
+    <body>
+        <h2>Checking out a normal working copy</h2>
+        <p>
+            To checkout a normal working copy of the latest development, checkout the trunk.
+            This is what's called HEAD or MAIN/LATEST in other version control systems.
+        </p>
+        <p><code>svn co https://svn.sourceforge.net/svnroot/japi japi/trunk</code></p>
+        <h2>Rules</h2>
+        <p>
+            Current rules are this:
+        </p>
+        <ul>
+            <li>
+                All files need a mime type.
+                For normal source code, use <code>text/plain</code>.
+                Use <code>svn propset svn:mime-type text/plain <var>filename</var></code> to set the mime type.
+            </li>
+            <li>
+                All files with a text based mime type need a line ending setting.
+                JAPI convention is to always use <code>LF</code>.
+                Use <code>svn propset svn:eol-style LF <var>filename</var></code> to set the line ending style.
+            </li>
+        </ul>
+        <h2>Releases</h2>
+        <p>
+            Releases are created in the following way:
+        </p>
+        <ol>
+            <li>
+                A branch with the new release name is created.
+                Usually the branch will increase the minor revision and use it as its name.
+                Example: <code>svn copy trunk branch/0.8</code>.
+                The policy for branches is that they aren't completely frozen, but only changes required for release and bug fixing are allowed.
+            </li>
+            <li>
+                The branch is braught into releasable state.
+                This usually should be zero effort, yet consider this a separate step.
+            </li>
+            <li>
+                The release is published.
+                As a part of the release publishing, a tag with the new release name and patch level is created.
+                Example: <code>svn copy branch/0.8 tag/0.8.0</code>.
+                The policy for tags is that they are completely frozen, tags must never ever be changed.
+            </li>
+        </ol>
+        <h2>Checking out a released version</h2>
+        <p>
+            To checkout a released version, use <code>svn co https://svn.sourceforge.net/svnroot/japi japi/tag/<var>version</var></code> with
+            <var>version</var> being the release name.
+            To checkout, for example, version <samp>0.8.0</samp>, use <samp>svn co https://svn.sourceforge.net/svnroot/japi japi/tag/0.8.0</samp>.
+        </p>
+    </body>
+</html>

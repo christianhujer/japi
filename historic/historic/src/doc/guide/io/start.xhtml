@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: start.xhtml,v 1.8 2006/03/08 00:57:38 christianhujer Exp $ -->
+<!DOCTYPE html PUBLIC "-//JAPI//DTD XHTML 1.1 + XInclude 1.0//EN" "../../dtd/xhtml11_xinclude10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta name="Date" content="$Date: 2006-04-04 02:30:14 +0530 (Di, 04. Apr 2006) $" />
+        <title>JAPI Guide: I/O</title>
+    </head>
+    <body>
+        <h2>JAPI I/O Introduction</h2>
+        <p>
+            JAPI extends Java with some I/O classes that are mainly useful for writing I/O programs.
+        </p>
+        <h3>JAPI I/O Stream extensions</h3>
+        <p>
+            The stream extensions are <a href="/api/latest/net/sf/japi/io/ARGVInputStream"><code>ARGVInputStream</code></a> for binary data and <a href="/api/latest/net/sf/japi/io/ARGVReader"><code>ARGVReader</code></a> for character data which enable you to write Java command line programs in a similar way you would do in Perl using <code>&lt;ARGV&gt;</code>.
+            The class <a href="/api/latest/net/sf/japi/io/ARGV"><code>ARGV</code></a> provides access to the lines provided by an <code>ARGVReader</code> in an iterable way.
+        </p>
+        <h3>Other JAPI I/O extensions</h3>
+        <p>
+            The class <a href="/api/latest/net/sf/japi/io/ARGVEnumeration"><code>ARGVEnumeration</code></a> is a class providing an enumeration suitable for <code>java.lang.SequenceInputStream</code> that creates an Enumeration of InputStreams from an array of filenames.
+            <code>ARGVInputStream</code> and <code>ARGVReader</code> use <code>ARGVEnumeration</code>.
+        </p>
+        <p>
+            The class <a href="/api/latest/net/sf/japi/io/IOHelper"><code>IOHelper</code></a> provides some useful I/O methods, currently only for copying data.
+        </p>
+        <p>
+            The class <a href="/api/latest/net/sf/japi/util/PrintStreamThrowableHandler"><code>net.sf.japi.util.PrintStreamThrowableHandler</code></a> is used by <code>ARGVInputStream</code> and <code>ARGVReader</code> as a default error handler for reporting ARGV problems to the user via STDERR.
+        </p>
+        <h2>Examples</h2>
+        <h3>Example 1: The UNIX command <code>cat</code></h3>
+        <h4><code>cat</code> without JAPI</h4>
+        <pre class="listing"><xi:include href="src/CatPlain.java.xhtml" xpointer="/1/2/1/1" /></pre>
+        <h4><code>cat</code> with JAPI</h4>
+        <pre class="listing"><xi:include href="src/CatJAPI.java.xhtml" xpointer="/1/2/1/1" /></pre>
+        <h3>Example 2: The UNIX command <code>sort</code></h3>
+        <h4><code>sort</code> without JAPI</h4>
+        <pre class="listing"><xi:include href="src/SortPlain.java.xhtml" xpointer="/1/2/1/1" /></pre>
+        <h4><code>sort</code> with JAPI</h4>
+        <pre class="listing"><xi:include href="src/SortJAPI.java.xhtml" xpointer="/1/2/1/1" /></pre>
+        <h3>Example 3: The UNIX command <code>uniq</code></h3>
+        <h4><code>uniq</code> without JAPI</h4>
+        <pre class="listing"><xi:include href="src/UniqPlain.java.xhtml" xpointer="/1/2/1/1" /></pre>
+        <h4><code>uniq</code> with JAPI</h4>
+        <pre class="listing"><xi:include href="src/UniqJAPI.java.xhtml" xpointer="/1/2/1/1" /></pre>
+    </body>
+</html>

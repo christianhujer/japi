@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2009  Christian Hujer.
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation; either
+  ~ version 2.1 of the License, or (at your option) any later version.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>JAPI Library Taglets</title>
+    </head>
+    <body>
+        <h1>JAPI Library Taglets</h1>
+        <h2>What is JAPI Library Taglets?</h2>
+        <p>
+            JAPI Library Taglets is a collection of taglets that are used by the JAPI developers during JAPI development.
+            They might also be useful for your Java project if you use Javadoc.
+        </p>
+        <h2>Taglet Index (alphabetical)</h2>
+        <ul>
+            <li><a href="#tl_fixme"><code>@fixme</code></a></li>
+        </ul>
+        <h2>Taglet Index (grouped)</h2>
+        <ul>
+            <li>
+                Simple Documentation Taglets
+                <ul>
+                    <li><a href="#tl_note"><code>@note</code></a></li>
+                    <li><a href="#tl_warning"><code>@warning</code></a></li>
+                </ul>
+            </li>
+            <li>
+                Revisit-Taglets
+                <ul>
+                    <li><a href="#tl_fixme"><code>@fixme</code></a></li>
+                    <li><a href="#tl_todo"><code>@todo</code></a></li>
+                    <li><a href="#tl_xxx"><code>@xxx</code></a></li>
+                </ul>
+            </li>
+            <li>
+                Contract Taglets
+                <ul>
+                    <li><a href="#tl_invariant"><code>@invariant</code></a></li>
+                    <li><a href="#tl_pre"><code>@pre</code></a></li>
+                    <li><a href="#tl_post"><code>@post</code></a></li>
+                    <li><a href="#tl_retval"><code>@retval</code></a></li>
+                </ul>
+            </li>
+        </ul>
+        <h2>The Taglets (alphabetical)</h2>
+        <h3 id="tl_fixme"><code>@fixme</code></h3>
+        <p>
+            The <code>@fixme</code> taglet can be used to denote code that's known to be broken and needs fixing later.
+        </p>
+        <h4>Example</h4>
+        <pre><![CDATA[    /** Shows the attributes dialog for the given game object.
+     * @fixme Currently this method is broken for game objects without an archetype.
+     */
+     public void showDialog(final GameObject object) {
+         showDialog(object, object.getArchetype());
+     }]]></pre>
+        <h3 id="tl_invariant"><code>@invariant</code></h3>
+        <p>
+            The <code>@invariant</code> taglet can be used to denote invariants in a symbol's contract.
+        </p>
+        <h4>Example</h4>
+        <pre><![CDATA[/** A simple constraint integer value class.
+ */
+public class ConstraintMutableInteger {
+
+    /** Minimum allowed value (inclusive). */
+    private int min;
+
+    /** Maximum allowed value (inclusive). */
+    private int max;
+
+    /** Current value.
+     * @invariant current >= min
+     * @invariant max >= current
+     */
+    private int current;
+
+    // ...
+}]]></pre>
+        <h3 id="tl_note"><code>@note</code></h3>
+        <p>
+            The <code>@note</code> taglet can be used to highlight notes for users of a symbol.
+        </p>
+        <h3 id="tl_post"><code>@post</code></h3>
+        <p>
+            The <code>@post</code> taglet can be used to denote postconditions for an operation's contract.
+        </p>
+        <h4>Example</h4>
+        <pre><![CDATA[    /** Sorts a list in ascending order.
+     * @param list List to sort
+     * @post <var>list</var> is sorted in ascending order
+     */
+     public static void sort(final List<? extends Comparable> list) { /* ... */}]]></pre>
+        <h3 id="tl_pre"><code>@pre</code></h3>
+        <p>
+            The <code>@pre</code> taglet can be used to denote preconditions for an operation's contract.
+        </p>
+        <h4>Example</h4>
+        <pre><![CDATA[    /** Performs a binary search over a list to search the desired element.
+     * @param list List to perform binary search on
+     * @param element Element to search for
+     * @return index of <var>element</var> in <var>list</var> or <code>-1</code> if not found
+     * @pre <var>list</var> is sorted in ascending order
+     */
+     public static <T> int binarySearch(final List<T> list, final T element) { /* ... */ }]]></pre>
+        <h3 id="tl_retval"><code>@retval</code></h3>
+        <p>
+            The <code>@retval</code> taglet can be used to denote return values for an operation's return.
+        </p>
+        <h4>Example</h4>
+        <pre><![CDATA[    /** Performs a binary search over a list to search the desired element.
+     * @param list List to perform binary search on
+     * @param element Element to search for
+     * @return search position
+     * @retval index of <var>element</var> in <var>list</var> if found
+     * @retval <code>-1</code> if not found
+     */
+     public static <T> int binarySearch(final List<T> list, final T element) { /* ... */ }]]></pre>
+        <h3 id="tl_todo"><code>@todo</code></h3>
+        <p>
+            The <code>@fixme</code> taglet can be used to denote code that's known to be incomplete and needs completion later.
+        </p>
+        <h3 id="tl_warning"><code>@warning</code></h3>
+        <p>
+            The <code>@warning</code> taglet can be used to highlight warnings for users of a symbol.
+        </p>
+        <h3 id="tl_xxx"><code>@xxx</code></h3>
+        <p>
+            The <code>@xxx</code> taglet can be used to denote code that looks like being broken yet seems to work but should be reviewed and refactored later.
+        </p>
+    </body>
+</html>

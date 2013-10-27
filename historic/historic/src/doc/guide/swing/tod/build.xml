@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Example build file for Swing Tip Of The Day Example application. -->
+<!DOCTYPE project SYSTEM "../../../../project.dtd">
+<project name="Swing Tip Of The Day Example" default="run">
+
+    <property name="pathToRoot" value="../../../../.." />
+    <property name="progName"   value="App" />
+    <property name="mainClass"  value="ex.TodExampleApp" />
+    <property file="${pathToRoot}/project.properties" />
+
+    &include;
+
+</project>

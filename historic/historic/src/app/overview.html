@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JAPI - (Yet another (hopefully) useful) Java API
+  -
+  - Copyright (C) 2004-2006 Christian Hujer
+  -
+  - This program is free software; you can redistribute it and/or
+  - modify it under the terms of the GNU General Public License as
+  - published by the Free Software Foundation; either version 2 of the
+  - License, or (at your option) any later version.
+  -
+  - This program is distributed in the hope that it will be useful, but
+  - WITHOUT ANY WARRANTY; without even the implied warranty of
+  - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  - General Public License for more details.
+  -
+  - You should have received a copy of the GNU General Public License
+  - along with this program; if not, write to the Free Software
+  - Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+  - 02111-1307, USA.
+  -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <title>JAPI Overview</title>
+    </head>
+    <body>
+        <h1>JAPI Overview</h1>
+        <p>
+            JAPI is a Java API that extends the original API with features that the JAPI developers found to be missing or with classes that proxy or
+            facade the original Java API to make it easier to use.
+        </p>
+        <p>
+            Currently, JAPI consists of the following fields of classes:
+        </p>
+        <dl>
+            <dt>IO</dt>
+            <dt>Generic Swing</dt>
+            <dd>
+                The classes in {@link net.sf.japi.swing} extend Swing with new features like components for certain features (e.g. TipOfTheDay, FileField, JFileChooserButton, ProgressDisplay, XML Parser error (e.g. invalid XML) display), managers for groups of features (ActionBuilder, IconManager, LookAndFeelManager), renderers (LocaleListCellRenderer) and handy Action implementations (DisposeAction, DummyAction, ReflectionAction, ToggleAction).
+            </dd>
+            <dt>Swing Preferences</dt>
+            <dd>
+                The package {@link net.sf.japi.swing.prefs} contains a framework for creating preferences dialogs with Swing.
+            </dd>
+            <dt>Utility classes</dt>
+            <dd>
+                Some utility classes like some useful iterators, a Util class providing features you might miss in {@link java.util.Collections} or {@link java.util.Arrays} and some new Collection classes.
+            </dd>
+        </dl>
+    </body>
+</html>

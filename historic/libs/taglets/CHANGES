@@ -1,0 +1,11 @@
+JAPI TAGLETS CHANGLOG
+---------------------
+
+2007-08-15
+    Christian Hujer:
+    * Renamed @precondition to @pre to be compatible with Doxygen.
+    * Renamed @postcondition to @post to be compatible with Doxygen.
+
+2007
+    Christian Hujer:
+    * Creation

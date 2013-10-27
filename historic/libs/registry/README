@@ -1,0 +1,117 @@
+JAPI REGISTRY README
+====================
+
+This file contains some important information about Japi Registry.  You should
+read it first.
+
+
+TABLE OF CONTENTS
+-----------------
+* project description
+* project website
+* system requirements
+* file structure
+* build / installation (see file INSTALL)
+* maintainers / credits (see file CREDITS)
+* project news (see file NEWS)
+* mailing lists
+* license information (see file LICENSE)
+
+    
+PROJECT DESCRIPTION
+-------------------
+Japi Registry is a library for dynamic lookup of framework implementations.
+It is part of the Japi project.
+
+
+PROJECT WEBSITE
+---------------
+Project homepage:    http://japi.sourceforge.net/
+Project website:     http://sourceforge.net/projects/japi/
+Project statistics:  http://cia.navi.cx/projects/japi
+Subproject homepage: http://japi.sourceforge.net/registry/
+
+
+SYSTEM REQUIREMENTS
+-------------------
+Java 5.0
+    Previous versions of Java will not work.  Gridarta uses Generics, autoboxing,
+    static imports, foreach loops, assertions, covariant return types and varargs
+    quite a lot.
+
+Ant 1.6.5
+    Previous versions of Ant might work but are not tested.
+
+
+FILE STRUCTURE
+--------------
+build.xml
+    The build file to build the project with Ant.
+
+COPYING
+    Japi Registry license conditions.  Note: applies to Japi Registry only, not
+    third party libraries.
+
+CREDITS
+    List of project contributors.  See also MAINTAINERS.
+
+INSTALL
+    Description of how to build and install Japi Registry.
+
+lib/
+    Directory containing third party libraries used to build Japi Registry.
+    Please note that these thrid party libraries have their own license
+    conditions.  The licenses of the third party libraries are included in the
+    lib/ directory.
+
+LICENSE
+    File with license information.
+
+MAINTAINERS
+    List of current project maintainers.  See also CREDITS.
+
+NEWS
+    Project News.
+
+project.properties
+    File with automatically changed settings for Ant.
+
+README
+    This file.
+
+src/
+    Source files.
+
+
+BUILD / INSTALLATION
+--------------------
+See the file INSTALL.
+
+
+MAINTAINERS / CREDITS
+---------------------
+See the file CREDITS.
+
+
+PROJECT NEWS
+------------
+See the file NEWS.
+
+
+MAILING LISTS
+-------------
+Japi mailing lists are the usual sourceforge hosted sourceforge project
+mailing lists.  The current mailing lists are:
+* japi-news@lists.sourceforge.net
+    News for JAPI users and developers (low traffic)
+* japi-devel@lists.sourceforge.net
+    japi developer talk list
+* japi-cvs@lists.sourceforge.net
+    svn commit digest list (named cvs for historic reasons)
+To find out how to subscribe or read the archives, go to:
+    http://sourceforge.net/mail/?group_id=149894
+
+
+LICSENSE INFORMATION
+--------------------
+See the file LICENSE

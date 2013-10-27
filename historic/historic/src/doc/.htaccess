@@ -1,0 +1,9 @@
+# $Id: .htaccess,v 1.1 2006/01/19 21:22:56 christianhujer Exp $
+
+DirectoryIndex start
+Options +MultiViews +Includes
+RemoveType .html
+RemoveType .xhtml
+AddType text/html;charset=UTF-8 .html
+AddType application/xhtml+xml;charset=UTF-8;qs=0.999 .xhtml
+ErrorDocument 404 /status404

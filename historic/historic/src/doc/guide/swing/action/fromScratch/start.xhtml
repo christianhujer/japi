@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: start.xhtml,v 1.5 2006/02/18 22:54:27 christianhujer Exp $ -->
+<!DOCTYPE html PUBLIC "-//JAPI//DTD XHTML 1.1 + XInclude 1.0//EN" "../../../../dtd/xhtml11_xinclude10.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <meta name="Date" content="$Date: 2007-08-12 14:32:36 +0530 (So, 12. Aug 2007) $" />
+        <title>JAPI: How to develop Swing applications with JAPI</title>
+        <xi:include parse="xml" href="src/net/sf/japi/examples/editor/Editor.java.xhtml" xpointer="/1/1/1" />
+    </head>
+    <body>
+        <p>
+            This part of the guide demonstrates how to develop a Swing application from scratch using the JAPI library, mainly the class
+            <code>ActionBuilder</code>.
+        </p>
+        <p>
+            Our example application shall be a simple text editor without any advanced features.
+            Examples are good if examples are easy to understand, so we want to keep things simple.
+        </p>
+        <fieldset class="screenshot">
+            <legend>Screenshots of sample application</legend>
+            <img src="Editor.png" alt="Screenshot of sample editor application" class="screenshot" />
+        </fieldset>
+        <h2 id="Step1">Step 1: Identify Use Cases</h2>
+        <p>
+            The first step is to identify the use cases of the application.
+            The following use cases are involved:
+        </p>
+        <ul>
+            <li>
+                File related use cases
+                <ul>
+                    <li>Creating a new empty text</li>
+                    <li>Opening an existing text file</li>
+                    <li>Saving a text file</li>
+                    <li>Saving a text file under a new name</li>
+                    <li>Quitting the application</li>
+                </ul>
+            </li>
+            <li>
+                Editing related use cases
+                <ul>
+                    <li>Inserting text</li>
+                    <li>Overwriting text</li>
+                    <li>Deleting text</li>
+                    <li>Cutting text to the clipboard</li>
+                    <li>Copying text to the clipboard</li>
+                    <li>Pasting text from the clipboard</li>
+                </ul>
+            </li>
+        </ul>
+        <p>
+            The use cases <em>Inserting text</em>, <em>Overwriting text</em> and <em>Deleting text</em> are already handled automatically by the Swing component JTextPane which we will to use for our text editor application.
+            So there's nothing to do but simply use JTextPane for implementing them.
+        </p>
+        <p>
+            A JTextPane can also be attached to a DefaultEditorKit which handles <em>Cutting text to the clipboard</em>, <em>Copying text to the clipboard</em> and <em>Pasting text from the clipboard</em>.
+            We will use this during <a href="#Step8">Step 8: Adding precreated actions</a>.
+        </p>
+        <h2 id="Step2">Step 2: Menu Concept</h2>
+        <p>
+            We define the menu structure as:
+        </p>
+        <ul>
+            <li>
+                File
+                <ul>
+                    <li>New</li>
+                    <li>Open</li>
+                    <li>Save</li>
+                    <li>Save As</li>
+                    <li>Quit</li>
+                </ul>
+            </li>
+            <li>
+                Edit
+                <ul>
+                    <li>Cut</li>
+                    <li>Copy</li>
+                    <li>Paste</li>
+                </ul>
+            </li>
+        </ul>
+        <h2 id="Step3">Step 3: Toolbar Concept</h2>
+        <p>
+            We define the toolbar structure as:
+        </p>
+        <ul>
+            <li>New</li>
+            <li>Open</li>
+            <li>Save</li>
+            <li>Save As</li>
+            <li>(separator)</li>
+            <li>Cut</li>
+            <li>Copy</li>
+            <li>Paste</li>
+        </ul>
+        <h2 id="Step4">Step 4: Defining the package</h2>
+        <p>
+            Our package will be <code>net.sf.japi.examples.editor</code>.
+            Our main class will be <code>net.sf.japi.examples.editor.Editor</code>.
+            The first version will look like this:
+        </p>
+        <pre class="listing">package net.sf.japi.examples.editor;
+
+/**
+ * A Text Editor application.
+ * This is an example for developing an application with JAPI.
+ * @author <a href="mailto:chris@riedquat.de">Christian Hujer</a>
+ */
+public class Editor {
+
+    /** Main program.
+     * @param args command line arguments (currently ignored)
+     */
+    public static void main(final String... args) {
+        new Editor();
+    }
+
+} // class Editor</pre>
+        <h2 id="Step5">Step 5: Understanding the logic behind <code>ActionBuilder</code></h2>
+        <p>
+            <code>ActionBuilder</code> is used for creating instances of <code>javax.swing.Action</code>.
+            All required information for such an <code>Action</code> is read from a properties file, except the action code itself.
+            When you use <code>ActionBuilder</code> to create an Action that actually shall perform something, you provide an Object which <code>ActionBuilder</code> will use using Reflection.
+        </p>
+        <p>
+            To achieve this, each <code>Action</code> is assigned a unique name.
+        </p>
+        <h2 id="Step5">Step 5: Defining the menu</h2>
+        <p>
+            In Swing, a complete application menu is defined as a JMenuBar which contains JMenus, these JMenus contain JMenuItems as entries or other JMenus as sub menus.
+        </p>
+        <p>
+            In JAPI, creating a complete application menu is a one liner in the Java code.
+            The complete menu is defined in one or more properties files, of which the central one is named <code>action.properties</code>.
+            The class <code>ActionBuilder</code> is used to access these properties files and create menubars or toolbars from them.
+            The properties specify everything regarding the user interface representation of these menus and toolbars.
+            This includes: <em>Text</em>, <em>Mnemonic</em>, <em>KeyStroke (Shortcut)</em>, <em>Icon</em>, <em>Shortdescription (Tooltip Text)</em>.
+            Under the hood, <code>ActionBuilder</code> loads these properties files as regular <code>ResourceBundle</code>, so everything that applies to normal <code>ResourceBundle</code>s / their properties files also applies to <code>ActionBuilder</code>, including <abbr>i18n</abbr>/<abbr>l10n</abbr>.
+        </p>
+        <pre class="listing">editor.menuBar=file edit</pre>
+        <p>
+            This line defines that the menu bar consists of two menus named <code>file</code> and <code>edit</code>.
+            The names <code>file</code> and <code>edit</code> are only internally used.
+        </p>
+        <pre class="listing">file.menu=fileNew fileOpen fileSave fileSaveAs fileQuit
+file.text=File
+file.mnemonic=F</pre>
+        <p>
+            These lines define that the menu file is labelled "File", with "F" as mnemonic, and that the file action is a menu consisting of other actions.
+            These other actions are <code>fileNew</code>, <code>fileOpen</code>, <code>fileSave</code>, <code>fileSaveAs</code> and <code>fileQuit</code>.
+        </p>
+        <pre class="listing">fileNew.text=New
+fileNew.mnemonic=N
+fileNew.accel=ctrl pressed N
+fileNew.shortdescription=Creates a new file</pre>
+        <p>
+            These lines define that the action "fileNew" is a menu item labelled "New", with "N" as mnemonic, "Ctrl+N" as keyboard shortcut and
+            "Creates a new file" as tooltip text.
+            The other actions and menus are defined analoguous.
+        </p>
+        <p>
+            It's also possible to store "normal" properties in this property file.
+            Let's store a property for the frame title.
+        </p>
+        <pre class="listing">frame.title=Editor (JAPI usage example)</pre>
+        <p>
+            It is a good idea to separate properties which are dependent on the locale from those that are locale independent.
+            To achieve this in a configurable way, <code>ActionBuilder</code> knows properties for splitting the information over multiple properties files.
+        </p>
+        <pre class="listing">ActionBuilder.additionalBundles=net.sf.japi.examples.editor.messages</pre>
+        <p>
+            This tells ActionBuilder that it additionally has to look in a bundle named <code>net.sf.japi.examples.editor.messages</code>.
+        </p>
+        <h2 id="Step6">Step 6: Using the defined menu</h2>
+        <pre class="listing">package net.sf.japi.examples.editor;
+
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
+import javax.swing.JFrame;
+import net.sf.japi.swing.ActionBuilder;
+
+/** A Text Editor application.
+ * This is an example for developing an application with JAPI.
+ * @author <a href="mailto:chris@riedquat.de">Christian Hujer</a>
+ */
+public class Editor {
+
+    /** Action Builder. */
+    private static final ActionBuilder ACTION_FACTORY = getFactory("net.sf.japi.examples.editor");
+
+    /** Main program.
+     * @param args command line arguments (currently ignored)
+     */
+    public static void main(final String... args) {
+        new Editor();
+    }
+
+    /** Application frame. */
+    private JFrame frame = new JFrame(ACTION_FACTORY.getString("frame.title"));
+
+    /** Editor component. */
+    private JTextPane textPane = new JTextPane();
+
+    /** FileChooser for opening and saving files. */
+    private JFileChooser fileChooser = new JFileChooser();
+
+    /** Create the Editor. */
+    public Editor() {
+        frame.setJMenuBar(ACTION_FACTORY.createMenuBar(true, "editor", this));
+        frame.add(ACTION_FACTORY.createToolBar(this, "editor"), NORTH);
+        frame.add(new JScrollPane(textPane));
+        frame.pack();
+        frame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        frame.setVisible(true);
+    }
+
+} // class Editor</pre>
+        <p>
+            As you see, programming the menu is just a one liner.
+            But how is code attached to the actions attached to the menu items?
+            See next step.
+        </p>
+        <h2 id="Step7">Step 7: Attaching Code to the actions</h2>
+        <p>
+            The name of an action is at the same time the name of the method that's invoked using Reflection.
+            Such action methods must be public instance methods with empty parameter list and void return type.
+            These methods may declare any Exception you want.
+            Reflection will be used to find, independently of declared exceptions, a declarative exception handler for any exception thrown by the action method.
+            The action methods should be annotated as <code>@ActionMethod</code>.
+            In future this will be used for a tool that performs a static code analysis and reports action methods not covered with action definitions and action definitions not covered with action methods.
+        </p>
+        <h3>Step 7.1: Implementing <code>fileNew</code></h3>
+        <pre class="listing">    /** Action method.
+     * @used
+     */
+    @ActionMethod public void fileNew() {
+        textPane.setText("");
+        file = null;
+    }</pre>
+        <h3>Step 7.2: Implementing <code>fileOpen</code></h3>
+        <pre class="listing">    /** Action method.
+     * @used
+     */
+    @ActionMethod public void fileOpen() throws FileNotFoundException, IOException {
+        if (fileChooser.showOpenDialog(frame) == APPROVE_OPTION) {
+            final StringBuilder newText = new StringBuilder();
+            final File newFile = fileChooser.getSelectedFile();
+            final FileReader in = new FileReader(newFile);
+            try {
+                final char[] buf = new char[4096];
+                for (int charsRead; (charsRead = in.read(buf)) != -1; ) {
+                    newText.append(buf, 0, charsRead);
+                }
+                textPane.setText(newText.toString());
+                file = newFile;
+            } finally {
+                in.close();
+            }
+        }
+    }</pre>
+        <h2 id="Step8">Step 8: Adding precreated actions</h2>
+        <p>
+            For the edit actions <em>Cut</em>, <em>Copy</em> and <em>Paste</em> it would be nice if they were consistent with those provided by the editor kit.
+            In fact it would be even better if we would use the Actions defined by the editor kit.
+            That's of course also possible with <code>ActionBuilder</code>.
+            You can register any number of <code>ActionProvider</code>s with an <code>ActionBuilder</code>.
+            An <code>ActionProvider</code> is used to lookup actions using their names (keys) before <code>ActionBuilder</code> will create its own.
+            All we need to do is have our Editor implement <code>ActionProvider</code> and make sure it provides the right Actions.
+        </p>
+        <pre class="listing"><![CDATA[    /** The supported editor action names and their corresponding kit action names. */
+    private static final Map<String, String> editorActionNames = new HashMap<String, String>();
+    static {
+        editorActionNames.put("editCut",       DefaultEditorKit.cutAction);
+        editorActionNames.put("editCopy",      DefaultEditorKit.copyAction);
+        editorActionNames.put("editPaste",     DefaultEditorKit.pasteAction);
+        editorActionNames.put("editSelectAll", DefaultEditorKit.selectAllAction);
+    };
+
+    /** {@inheritDoc} */
+    @Nullable public Action getAction(final String key) {
+        for (final Action action : textPane.getActions()) {
+            final String realKey = editorActionNames.get(key);
+            if (realKey != null && realKey.equals(action.getValue(Action.NAME))) {
+                ACTION_FACTORY.initAction(true, action, key);
+                return action;
+            }
+        }
+        return null;
+    }]]></pre>
+        <h2>Complete source</h2>
+        <h3>Java Source: <code>net/sf/japi/examples/editor/Editor.java</code></h3>
+        <div class="listing"><xi:include href="src/net/sf/japi/examples/editor/Editor.java.xhtml" xpointer="/1/2/1/1" /></div>
+        <h3>Action Properties: <code>net/sf/japi/examples/editor/action.properties</code></h3>
+        <pre class="listing"><xi:include href="src/net/sf/japi/examples/editor/action.properties" parse="text" encoding="iso-8859-1" /></pre>
+        <h3>Message Properties: <code>net/sf/japi/examples/editor/messages.properties</code></h3>
+        <pre class="listing"><xi:include href="src/net/sf/japi/examples/editor/messages.properties" parse="text" encoding="iso-8859-1" /></pre>
+    </body>
+</html>

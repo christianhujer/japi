@@ -1,0 +1,5 @@
+Planned features:
+* Fix problem when original jar name and link jar name match.
+* Allow linking to jars at a different location (without copying them).
+* Improve command line interface (help, options, version, examples etc.).
+* Feature for running jars without "Main-Class" attribute in their manifest.
