@@ -1,0 +1,49 @@
+<!--
+  ~ Copyright (C) 2009  Christian Hujer
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<!ELEMENT Document (Info, Data)>
+
+<!ELEMENT info (title, category, type, level, language, author)>
+
+<!ELEMENT title    (#PCDATA)>
+<!ELEMENT category (#PCDATA)>
+<!ELEMENT type     (#PCDATA)>
+<!ELEMENT level    (#PCDATA)>
+<!ELEMENT language (#PCDATA)>
+<!ELEMENT author   (name, email, www)>
+<!ELEMENT name     (#PCDATA)>
+<!ELEMENT email    (#PCDATA)>
+<!ELEMENT www      (#PCDATA)>
+<!ELEMENT Data     (question*)>
+<!ELEMENT question (text, (false|true)*)>
+<!ELEMENT text     (#PCDATA)>
+<!ELEMENT false    (#PCDATA)>
+<!ELEMENT true     (#PCDATA)>
+
+<!ATTLIST question
+    type   CDATA #IMPLIED
+    points CDATA #IMPLIED
+    time   CDATA #IMPLIED
+>
+
+<!ATTLIST true
+    points CDATA #IMPLIED
+>
+
+<!ATTLIST false
+    points CDATA #IMPLIED
+>
+

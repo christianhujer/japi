@@ -1,0 +1,10 @@
+make a tree out of questions:
+
+QuestionCollectionElement
++-QuestionCollection 1->* QuestionCollectionElement
++-QuestionText
+  +-MCQuestionText
+  +-OpenQuestionText
+
+Think about better names for classes
+Support explanations in answers

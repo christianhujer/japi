@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2009  Christian Hujer
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+        <title>Unused</title>
+    </head>
+    <body>
+        <p>
+            Loading and Saving documents.
+        </p>
+        <h4>Terminology</h4>
+        <dl>
+            <dt>IO Module</dt>
+            <dd>Export Module or Import Module or Both {@link net.sf.japi.progs.jeduca.swing.io.IOBase}</dd>
+            <dt>Export Module</dt>
+            <dd>Class that implements {@link net.sf.japi.progs.jeduca.swing.io.Exporter}</dd>
+            <dt>Import Module</dt>
+            <dd>Class that implements {@link net.sf.japi.progs.jeduca.swing.io.Importer}</dd>
+            <dt>Document</dt>
+            <dd>Type Parameter of {@link net.sf.japi.progs.jeduca.swing.io.Exporter} or {@link net.sf.japi.progs.jeduca.swing.io.Importer}</dd>
+        </dl>
+        <h3>Usage</h3>
+        <h4>Programs that read and write only one file format</h4>
+        <ul>
+            <li>Write a class that implements {@link net.sf.japi.progs.jeduca.swing.io.Exporter} and {@link net.sf.japi.progs.jeduca.swing.io.Importer}. Or write two separate classes, as you like.</li>
+            <li>Invoke {@link net.sf.japi.progs.jeduca.swing.io.ImporterFileFilter#getInstanceFor(Importer)} to get your instance of a FileFilter for JFileChooser.</li>
+            <li>Invoke {@link net.sf.japi.progs.jeduca.swing.io.Importer#load(String)} to load a document.</li>
+            <li>Invoke {@link net.sf.japi.progs.jeduca.swing.io.Exporter#save(T,java.io.File)} to save a document.</li>
+        </ul>
+        <h4>Programs that read and write several different file formats</h4>
+        <ul>
+            <li>Write classes that implement {@link net.sf.japi.progs.jeduca.swing.io.Exporter} and {@link net.sf.japi.progs.jeduca.swing.io.Importer}.</li>
+            <li>
+                Use an IOModuleProvider for most load and save operations.
+                <ul>
+                    <li>Obtain your Provider using {@link net.sf.japi.progs.jeduca.swing.io.IOModuleProvider#getProvider(Class)}, giving your Document class as argument.</li>
+                    <li>Somewhere at the beginning of your program, before the first usage of the Provider, register your IO Modules using {@link net.sf.japi.progs.jeduca.swing.io.IOModuleProvider#register(IOBase)}</li>
+                    <li>Maybe you want to set the default Exporter if the first registered exporter isn't okay, use {@link net.sf.japi.progs.jeduca.swing.io.IOModuleProvider#setDefaultExporter(Exporter)}</li>
+                </ul>
+            </li>
+            <li>Invoke {@link net.sf.japi.progs.jeduca.swing.io.ImporterFileFilter#attachFileFilters(javax.swing.JFileChooser,IOModuleProvider)} to make your JFileChooser have FileFilters for all exporters.</li>
+            <li>Invoke {@link net.sf.japi.progs.jeduca.swing.io.IOModuleProvider#load(String)} to load a document.</li>
+            <li>Invoke {@link net.sf.japi.progs.jeduca.swing.io.IOModuleProvider#save(T,java.io.File)} to save a document.</li>
+        </ul>
+        <p>
+            Yes, {@link net.sf.japi.progs.jeduca.swing.io.IOModuleProvider} implements both, {@link net.sf.japi.progs.jeduca.swing.io.Importer} and {@link net.sf.japi.progs.jeduca.swing.io.Exporter}.
+        </p>
+    </body>
+</html>
