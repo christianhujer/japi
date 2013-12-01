@@ -54,18 +54,18 @@ public class Forwarder implements Runnable {
     }
 
     /** First socket. */
-    @NotNull private final Socket s1;
+    @NotNull private final Socket socket1;
 
     /** Second socket. */
-    @NotNull private final Socket s2;
+    @NotNull private final Socket socket2;
 
     /** Create a new Forwarder.
-     * @param s1 first socket
-     * @param s2 second socket
+     * @param socket1 first socket
+     * @param socket2 second socket
      */
-    public Forwarder(@NotNull final Socket s1, @NotNull final Socket s2) {
-        this.s1 = s1;
-        this.s2 = s2;
+    public Forwarder(@NotNull final Socket socket1, @NotNull final Socket socket2) {
+        this.socket1 = socket1;
+        this.socket2 = socket2;
     }
 
     /** Start the forwarder. */
@@ -73,20 +73,20 @@ public class Forwarder implements Runnable {
         new Thread(this).start();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void run() {
         try {
             try {
                 try {
-                    final Thread c1 = new Copier(s1.getInputStream(), s2.getOutputStream()).start();
-                    final Thread c2 = new Copier(s2.getInputStream(), s1.getOutputStream()).start();
+                    final Thread c1 = new Copier(socket1.getInputStream(), socket2.getOutputStream()).start();
+                    final Thread c2 = new Copier(socket2.getInputStream(), socket1.getOutputStream()).start();
                     c1.join();
                     c2.join();
                 } finally {
-                    s1.close();
+                    socket1.close();
                 }
             } finally {
-                s2.close();
+                socket2.close();
             }
         } catch (final InterruptedException ignore) {
             /* ignore */
