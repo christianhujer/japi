@@ -16,6 +16,9 @@
           </value>
         </option>
         <option name="JD_PARAM_DESCRIPTION_ON_NEW_LINE" value="true" />
+        <XML>
+          <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
+        </XML>
         <codeStyleSettings language="JAVA">
           <option name="INDENT_CASE_FROM_SWITCH" value="false" />
           <arrangement>
