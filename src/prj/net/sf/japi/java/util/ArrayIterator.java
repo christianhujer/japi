@@ -1,24 +1,29 @@
 package net.sf.japi.java.util;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 class ArrayIterator<N> implements Iterator<N> {
-    private final N[] nodes;
+    private final N[] elements;
     private int index;
 
     @SuppressWarnings("AssignmentToCollectionOrArrayFieldFromParameter")
     @SafeVarargs
-    ArrayIterator(final N... nodes) {
-        this.nodes = nodes;
+    ArrayIterator(final N... elements) {
+        this.elements = elements;
     }
 
     @Override
     public boolean hasNext() {
-        return index < nodes.length;
+        return index < elements.length;
     }
 
     @Override
     public N next() {
-        return nodes[index++];
+        try {
+            return elements[index++];
+        } catch (final ArrayIndexOutOfBoundsException e) {
+            throw new NoSuchElementException();
+        }
     }
 }

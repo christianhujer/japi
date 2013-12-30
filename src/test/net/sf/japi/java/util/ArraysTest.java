@@ -5,6 +5,8 @@ import java.util.NoSuchElementException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.junit.Assert.fail;
+
 public class ArraysTest {
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
@@ -21,6 +23,12 @@ public class ArraysTest {
         assertIteratorIsLikeArray(data);
     }
 
+    @Test(expected = NoSuchElementException.class)
+    public void iteratorThrowsNoSuchElementException() {
+        final Iterator<Object> iterator = Arrays.iterator(EMPTY_ARRAY);
+        iterator.next();
+    }
+
     @SafeVarargs
     private final <T> void assertIteratorIsLikeArray(final T... data) {
         final Iterator<T> iterator = Arrays.iterator(data);
@@ -31,7 +39,7 @@ public class ArraysTest {
         Assert.assertFalse(iterator.hasNext());
         try {
             iterator.next();
-            Assert.fail();
+            fail();
         } catch (final NoSuchElementException ignore) {
         }
     }
