@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<redirects>
+    <redirect from="foo" to="bar" />
+</redirects>
