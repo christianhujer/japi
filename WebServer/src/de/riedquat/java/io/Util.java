@@ -7,7 +7,10 @@ import java.io.OutputStream;
 
 public class Util {
 
-    public static final int DEFAULT_BUFFER_SIZE = 4096;
+    private static final int DEFAULT_BUFFER_SIZE = 4096;
+    private static final int CR = 13;
+    private static final int LF = 10;
+    private static final int EOF = -1;
 
     public static void copy(final InputStream in, final OutputStream out) throws IOException {
         copy(out, in);
@@ -17,6 +20,21 @@ public class Util {
         copy(out, DEFAULT_BUFFER_SIZE, ins);
     }
 
+    /** Just a test comment for markdown.
+     * Let's see how this works out.
+     *
+     * This is a markdown test.
+     * - One list item.
+     * - Another list item.
+     *
+     * @param out
+     *  OutputStream to write to.
+     * @param bufferSize
+     *  Size of the buffer for the copy operation.
+     * @param ins
+     *  InputStreams to read from.
+     * @throws IOException
+     */
     public static void copy(final OutputStream out, final int bufferSize, final InputStream... ins) throws IOException {
         copy(out, new byte[bufferSize], ins);
     }
@@ -38,14 +56,14 @@ public class Util {
         while (true) {
             final int b = in.read();
             switch (b) {
-            case -1:
+            case EOF:
                 if (out.size() != 0) {
                     return out.toString();
                 }
                 return null;
-            case 13:
+            case CR:
                 break;
-            case 10:
+            case LF:
                 return out.toString();
             default:
                 out.write(b);

@@ -9,11 +9,11 @@ import java.net.URISyntaxException;
 
 public class FileUtil {
     static File getErrorFile(final HttpException e) {
-        final Http11StatusCode responseCode = e.getResponseCode();
+        final HttpStatusCode responseCode = e.getResponseCode();
         return getErrorFile(responseCode);
     }
 
-    static File getErrorFile(final Http11StatusCode responseCode) {
+    static File getErrorFile(final HttpStatusCode responseCode) {
         return new File(responseCode.getStatusCode() + ".html");
     }
 

@@ -2,6 +2,7 @@ package de.riedquat.webserver;
 
 import de.riedquat.http.Http11StatusCode;
 import de.riedquat.http.HttpOutputStream;
+import de.riedquat.http.HttpStatusCode;
 import de.riedquat.http.HttpVersion;
 
 import java.io.File;
@@ -15,7 +16,7 @@ import static de.riedquat.java.io.Util.copy;
 public class FileHttpResponse extends HttpResponse {
     private final File file;
 
-    public FileHttpResponse(final HttpVersion httpVersionString, final File file, final Http11StatusCode responseCode) {
+    public FileHttpResponse(final HttpVersion httpVersionString, final File file, final HttpStatusCode responseCode) {
         super(responseCode, httpVersionString);
         this.file = file;
     }
