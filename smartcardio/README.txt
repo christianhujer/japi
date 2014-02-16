@@ -13,3 +13,14 @@ The class TerminalFactory has getInstance() methods which allow passing paramete
 Changes made so far:
 * Introduce standalone build system.
 * Change LPSCARD_READERSTATE_A to LPSCARD_READERSTATE
+
+Done:
+- Make it compilable on Linux (done).
+
+Open:
+- Make it compilable on Windows (open).
+- Run tests on Linux (open).
+- Run tests on Windows (open).
+- Change tests to JUnit (open).
+- Rename sun.security.smartcardio to de.riedquat.smartcardio (open).
+- Change TerminalFactory to pass parameters in order for reuse in list() (open).
