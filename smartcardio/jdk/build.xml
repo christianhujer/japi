@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<project name="de.riedquat.smartcardio" default="test">
+
+    <property name="os" value="solaris" />
+    <target name="test" depends="build">
+    </target>
+
+    <target name="build">
+        <mkdir dir="out" />
+        <javac
+            destdir="out"
+        >
+            <src path="src/share/classes/" />
+            <src path="src/${os}/classes/" />
+            <include name="sun/**" />
+            <include name="de/**" />
+        </javac>
+        <javah class="sun.security.smartcardio.PlatformPCSC"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="out"/>
+        <delete file="sun_security_smartcardio_PlatformPCSC.h"/>
+    </target>
+</project>

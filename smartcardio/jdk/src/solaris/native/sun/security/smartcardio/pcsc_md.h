@@ -45,7 +45,7 @@ typedef LONG (*FPTR_SCardStatus)(LONG hCard,
 
 typedef LONG (*FPTR_SCardGetStatusChange)(LONG hContext,
                 ULONG dwTimeout,
-                LPSCARD_READERSTATE_A rgReaderStates, ULONG cReaders);
+                LPSCARD_READERSTATE rgReaderStates, ULONG cReaders);
 
 typedef LONG (*FPTR_SCardTransmit)(LONG hCard,
                 LPCSCARD_IO_REQUEST pioSendPci,
