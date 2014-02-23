@@ -29,6 +29,7 @@ import javax.sound.midi.Receiver;
 import javax.sound.midi.SysexMessage;
 import javax.sound.midi.Transmitter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** Utility functions for working with MIDI.
  * @author <a href="mailto:cher@riedquat.de">Christian Hujer</a>
@@ -36,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class MidiUtils {
 
-    /** Utility class - do not instanciate. */
+    /** Utility class - do not instantiate. */
     private MidiUtils() {
     }
 
@@ -62,7 +63,7 @@ public final class MidiUtils {
      * @throws MidiUnavailableException if one of the requested devices is unavailable due to resource restrictions.
      */
     public static MidiDevice[] getReceivingDevices(final MidiDevice.Info... infos) throws MidiUnavailableException {
-        final List<MidiDevice> receivingDevices = new ArrayList<MidiDevice>();
+        final List<MidiDevice> receivingDevices = new ArrayList<>();
         for (final MidiDevice.Info deviceInfo : infos) {
             final MidiDevice device = MidiSystem.getMidiDevice(deviceInfo);
             if (device.getMaxReceivers() != 0) {
@@ -79,7 +80,7 @@ public final class MidiUtils {
      * @throws MidiUnavailableException if one of the requested devices is unavailable due to resource restrictions.
      */
     public static MidiDevice[] getTransmittingDevices(final MidiDevice.Info... infos) throws MidiUnavailableException {
-        final List<MidiDevice> transmittingDevices = new ArrayList<MidiDevice>();
+        final List<MidiDevice> transmittingDevices = new ArrayList<>();
         for (final MidiDevice.Info deviceInfo : infos) {
             final MidiDevice device = MidiSystem.getMidiDevice(deviceInfo);
             if (device.getMaxTransmitters() != 0) {
@@ -108,7 +109,7 @@ public final class MidiUtils {
 
     /** Returns the first device found in the system with the specified name that provides Receivers.
      * @param name Name of the receiving device to return.
-     * @return The requested device or <code>null</code> if the requested device was not found.
+     * @return The requested device or {@code null} if the requested device was not found.
      * @throws MidiUnavailableException if one of the requested devices is unavailable due to resource restrictions.
      */
     public static MidiDevice getReceivingDevice(@NotNull final String name) throws MidiUnavailableException {
@@ -125,7 +126,7 @@ public final class MidiUtils {
 
     /** Returns the first device found in the system with the specified name that provides Transmitters.
      * @param name Name of the receiving device to return.
-     * @return The requested device or <code>null</code> if the requested device was not found.
+     * @return The requested device or {@code null} if the requested device was not found.
      * @throws MidiUnavailableException if one of the requested devices is unavailable due to resource restrictions.
      */
     public static MidiDevice getTransmittingDevice(@NotNull final String name) throws MidiUnavailableException {
@@ -142,9 +143,10 @@ public final class MidiUtils {
 
     /** Returns a device by its name.
      * @param name Name of the device to return.
-     * @return The first device found that matches <var>name</var> or <code>null</code> if the requested device was not found.
+     * @return The first device found that matches <var>name</var> or {@code null} if the requested device was not found.
      * @throws MidiUnavailableException In case Midi is not available.
      */
+    @Nullable
     public static MidiDevice getDeviceByName(@NotNull final String name) throws MidiUnavailableException {
         for (final MidiDevice.Info deviceInfo : MidiSystem.getMidiDeviceInfo()) {
             if (deviceInfo.getName().equals(name)) {

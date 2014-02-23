@@ -41,32 +41,32 @@ public abstract class AbstractConverter<T> implements Converter<T> {
         this.targetClass = targetClass;
     }
 
-    /** {@inheritDoc} */
+    @Override
     @NotNull public final Class<T> getTargetClass() {
         return targetClass;
     }
 
-    /** {@inheritDoc} */
+    @Override
     @NotNull public final T convert(@NotNull final String arg) throws Exception {
         return convert(Locale.getDefault(), arg);
     }
 
-    /** {@inheritDoc} */
+    @Override
     @NotNull public final String getDisplayName() {
         return getDisplayName(Locale.getDefault());
     }
 
-    /** {@inheritDoc} */
+    @Override
     @NotNull public final String getDisplayName(@NotNull final Locale locale) {
         return ResourceBundle.getBundle("net.sf.japi.io.args.converter.Converter", locale).getString(targetClass.getName() + ".displayName");
     }
 
-    /** {@inheritDoc} */
+    @Override
     @NotNull public final String getDescription() {
         return getDescription(Locale.getDefault());
     }
 
-    /** {@inheritDoc} */
+    @Override
     @NotNull public final String getDescription(@NotNull final Locale locale) {
         return ResourceBundle.getBundle("net.sf.japi.io.args.converter.Converter", locale).getString(targetClass.getName() + ".description");
     }

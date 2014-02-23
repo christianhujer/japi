@@ -36,7 +36,7 @@ public final class IOUtils {
     /** Default size of buffers for copying and similar operations. */
     private static final int DEFAULT_BUF_SIZE = 4096;
 
-    /** Utility class - do not instanciate. */
+    /** Utility class - do not instantiate. */
     private IOUtils() {
     }
 
@@ -67,16 +67,9 @@ public final class IOUtils {
      * @throws IOException in case of I/O problems.
      */
     public static void copy(@NotNull final File fromFile, @NotNull final File toFile) throws IOException {
-        final InputStream in = new FileInputStream(fromFile);
-        try {
-            final OutputStream out = new FileOutputStream(toFile);
-            try {
-                copy(in, out);
-            } finally {
-                out.close();
-            }
-        } finally {
-            in.close();
+        try (final InputStream in = new FileInputStream(fromFile);
+             final OutputStream out = new FileOutputStream(toFile)) {
+            copy(in, out);
         }
     }
 

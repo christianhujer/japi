@@ -36,34 +36,65 @@ public class BooleanConverter extends AbstractConverter<Boolean> {
     private static final String[] FALSE_STRINGS = { "false", "no", "off", "0" };
 
     /** Creates a BooleanConverter.
-     * @param targetClass Target class, should be either <code>Boolean.class</code> or <code>Boolean.TYPE</code> resp. <code>boolean.class</code>.
+     * @param targetClass Target class, should be either {@code Boolean.class} or {@code Boolean.TYPE} resp. {@code boolean.class}.
      */
     public BooleanConverter(@NotNull final Class<Boolean> targetClass) {
         super(targetClass);
     }
 
-    /** {@inheritDoc} */
+    @Override
     @NotNull public Boolean convert(@NotNull final Locale locale, @NotNull final String arg) throws Exception {
-        for (final String s : TRUE_STRINGS) {
-            if (s.equalsIgnoreCase(arg)) {
-                return Boolean.TRUE;
-            }
+        if (isTrueString(locale, arg)) {
+            return Boolean.TRUE;
         }
-        for (final String s : FALSE_STRINGS) {
-            if (s.equalsIgnoreCase(arg)) {
-                return Boolean.FALSE;
-            }
-        }
-        for (final String s : ResourceBundle.getBundle("net.sf.japi.io.args.converter.Converter", locale).getString("java.lang.Boolean.true").split("\\s+")) {
-            if (s.equalsIgnoreCase(arg)) {
-                return Boolean.TRUE;
-            }
-        }
-        for (final String s : ResourceBundle.getBundle("net.sf.japi.io.args.converter.Converter", locale).getString("java.lang.Boolean.false").split("\\s+")) {
-            if (s.equalsIgnoreCase(arg)) {
-                return Boolean.FALSE;
-            }
+        if (isFalseString(locale, arg)) {
+            return Boolean.FALSE;
         }
         throw new IllegalArgumentException(arg + " is not a valid String for a boolean.");
+    }
+
+    private static boolean isTrueString(final Locale locale, final String arg) {
+        return isTrueString(arg) || isLocalizedTrueString(locale, arg);
+    }
+
+    private static boolean isFalseString(final Locale locale, final String arg) {
+        return isFalseString(arg) || isLocalizedFalseString(locale, arg);
+    }
+
+    private static boolean isTrueString(final String arg) {
+        return contains(TRUE_STRINGS, arg);
+    }
+
+    private static boolean isFalseString(final String arg) {
+        return contains(FALSE_STRINGS, arg);
+    }
+
+    private static boolean contains(final String[] strings, final String arg) {
+        for (final String s : strings) {
+            if (s.equalsIgnoreCase(arg)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isLocalizedTrueString(final Locale locale, final String arg) {
+        return containsStringInBundle(locale, "java.lang.Boolean.true", arg);
+    }
+
+    private static boolean isLocalizedFalseString(final Locale locale, final String arg) {
+        return containsStringInBundle(locale, "java.lang.Boolean.false", arg);
+    }
+
+    private static boolean containsStringInBundle(final Locale locale, final String key, final String arg) {
+        return contains(getStringsFromBundle(locale, key), arg);
+    }
+
+    private static String[] getStringsFromBundle(final Locale locale, final String key) {
+        return getBundle(locale).getString(key).split("\\s+");
+    }
+
+    private static ResourceBundle getBundle(final Locale locale) {
+        return ResourceBundle.getBundle("net.sf.japi.io.args.converter.Converter", locale);
     }
 }

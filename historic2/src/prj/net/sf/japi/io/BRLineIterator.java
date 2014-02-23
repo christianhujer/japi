@@ -24,6 +24,7 @@ import java.io.Reader;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /** An Iterator to get lines from a Reader.
  * @author <a href="mailto:cher@riedquat.de">Christian Hujer</a>
@@ -48,12 +49,12 @@ public class BRLineIterator implements Iterator<String> {
         nextLine = readLine();
     }
 
-    /** {@inheritDoc} */
+    @Override
     public boolean hasNext() {
         return nextLine != null;
     }
 
-    /** {@inheritDoc} */
+    @Override
     public String next() {
         if (nextLine == null) {
             throw new NoSuchElementException();
@@ -66,8 +67,9 @@ public class BRLineIterator implements Iterator<String> {
     }
 
     /** Read the next line from {@link #in} without throwing an exception.
-     * @return Next line or <code>null</code> if there are no more lines or <code>null</code> as well in case of exceptions.
+     * @return Next line or {@code null} if there are no more lines or {@code null} as well in case of exceptions.
      */
+    @Nullable
     private String readLine() {
         try {
             return in.readLine();
@@ -76,7 +78,7 @@ public class BRLineIterator implements Iterator<String> {
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }
