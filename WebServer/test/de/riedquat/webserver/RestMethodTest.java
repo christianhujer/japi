@@ -28,7 +28,7 @@ public class RestMethodTest {
         restMethodCalled = false;
         final WebServerFactory webServerFactory = new WebServerFactory();
         webServerFactory.addRest(this);
-        webServer = webServerFactory.createWebServer();
+        webServer = webServerFactory.createHttpServer();
         webServer.setSoTimeout(100);
     }
 

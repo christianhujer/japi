@@ -2,7 +2,6 @@ package de.riedquat.webserver;
 
 import de.riedquat.server.Server;
 import de.riedquat.webserver.redirect.Redirect;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,6 +10,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
+import javax.net.ssl.SSLServerSocketFactory;
 
 // TODO it's not nice that for every session the "configuration" (rests, redirect) is passed around this way.
 public class WebServerFactory {
@@ -36,20 +36,24 @@ public class WebServerFactory {
         httpSession.requestResponseLoop();
     }
 
-    public Server createWebServer(final ServerSocket serverSocket) {
+    public Server createHttpServer(final ServerSocket serverSocket) {
         return new Server(THREAD_NAME, this::handleSocket, serverSocket);
     }
 
-    public Server createWebServer(final SocketAddress socketAddress) throws IOException {
+    public Server createHttpServer(final SocketAddress socketAddress) throws IOException {
         return new Server(THREAD_NAME, this::handleSocket, socketAddress);
     }
 
-    public Server createWebServer() throws IOException {
+    public Server createHttpServer() throws IOException {
         return new Server(THREAD_NAME, this::handleSocket);
     }
 
-    public Server createWebServer(final int port) throws IOException {
-        return createWebServer(new ServerSocket(port));
+    public Server createHttpServer(final int port) throws IOException {
+        return createHttpServer(new ServerSocket(port));
+    }
+
+    public Server createHttpsServer(final int port) throws IOException {
+        return createHttpServer(SSLServerSocketFactory.getDefault().createServerSocket(port));
     }
 
     public void addRest(final Object rest) {

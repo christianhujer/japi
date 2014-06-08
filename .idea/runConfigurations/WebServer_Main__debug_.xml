@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="WebServer.Main (debug)" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="de.riedquat.webserver.main.Main" />
-    <option name="VM_PARAMETERS" value="-Djavax.net.ssl.keyStore=WebServerKeystore -Djavax.net.ssl.keyStorePassword=123456" />
+    <option name="VM_PARAMETERS" value="-Djavax.net.ssl.keyStore=WebServerKeyStore -Djavax.net.ssl.keyStorePassword=123456" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/WebServer" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />

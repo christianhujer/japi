@@ -33,7 +33,7 @@ public class WebServerStressTest {
 
     @Before
     public void startWebServer() throws IOException {
-        webServer = new WebServerFactory().createWebServer((SocketAddress) null);
+        webServer = new WebServerFactory().createHttpServer((SocketAddress) null);
         url = new URL("http://127.0.0.1:" + webServer.getPort() + "/foo.txt");
     }
 

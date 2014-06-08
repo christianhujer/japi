@@ -24,7 +24,7 @@ public class WebServerThreadTest {
     @BeforeClass
     public static void createWebServer() throws IOException {
         assertNotHasThreadWithName("WebServer");
-        webServer = new WebServerFactory().createWebServer((SocketAddress) null);
+        webServer = new WebServerFactory().createHttpServer((SocketAddress) null);
         port = webServer.getPort();
     }
 
@@ -68,7 +68,7 @@ public class WebServerThreadTest {
     @Test
     public void webServerStarted_anotherInstanceCanBeStarted() throws IOException {
         try (
-                final Server webServer2 = new WebServerFactory().createWebServer((SocketAddress) null)
+                final Server webServer2 = new WebServerFactory().createHttpServer((SocketAddress) null)
         ) {
             assertNotSame(webServer.getPort(), webServer2.getPort());
         }

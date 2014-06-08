@@ -29,7 +29,7 @@ public class SimpleRedirectTest {
         final WebServerFactory webServerFactory = new WebServerFactory();
         webServerFactory.addRest(this);
         final Map<String, String> redirectMap = new HashMap<>();
-        webServer = webServerFactory.createWebServer();
+        webServer = webServerFactory.createHttpServer();
         redirectMap.put("/redirectMe", "http://localhost:" + webServer.getPort() + "/redirectTarget");
         final Redirect redirect = new SimpleRedirect("", redirectMap);
         webServerFactory.setRedirect(redirect);

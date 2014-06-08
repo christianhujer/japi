@@ -3,7 +3,12 @@ package de.riedquat.http.rest;
 import de.riedquat.http.Http11Method;
 import de.riedquat.http.HttpOutputStream;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Marks a method as an HTTP method for a REST interface.
@@ -13,7 +18,7 @@ import java.lang.annotation.*;
  *  <li>It is annotated with this interface {@link RestMethod}.</li>
  *  <li>It is public</li>
  *  <li>It is not static</li>
- *  <li>It takes two parameters, the first one of type {@link RestInputStream}, the second one of type {@link RestOutputStream}.</li>
+ *  <li>It takes two parameters, the first one of type RestInputStream, the second one of type RestOutputStream.</li>
  * </ul>
  *
  * @author <a href="mailto:cher@riedquat.de">Christian Hujer</a>
@@ -22,7 +27,7 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target(ElementType.METHOD)
 public @interface RestMethod {
 
     /**
@@ -48,7 +53,7 @@ public @interface RestMethod {
     String[] methods() default { Http11Method.GET };
 
     /** Whether or not a RestProcessor shall apply this RestMethod to child paths of {@link #value() the uri} as well.
-     * @return <code>true</code> if a RestProcessor shall scan child paths, otherwise <code>false</code> (default).
+     * @return {@code true} if a RestProcessor shall scan child paths, otherwise {@code false} (default).
      */
     // TODO:2009-10-08:christianhujer:This should be replaced by a more flexible variant.
     //         There should be 4 options available:

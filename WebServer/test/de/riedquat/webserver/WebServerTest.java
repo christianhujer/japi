@@ -24,7 +24,7 @@ public class WebServerTest extends AbstractHttpSessionTest {
 
     @BeforeClass
     public static void startWebServer() throws IOException {
-        webServer = new WebServerFactory().createWebServer();
+        webServer = new WebServerFactory().createHttpServer();
         port = webServer.getPort();
     }
 
